@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: poketeam
+      POSTGRES_PASSWORD: poketeam
+      POSTGRES_DB: poketeam
+    ports:
+      - "5432:5432"
+    volumes:
+      - poketeam_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U poketeam"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  poketeam_pgdata:
