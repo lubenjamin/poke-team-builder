@@ -1,10 +1,19 @@
+import { PageHero } from "../components/PageHero";
 import { PokedexTable } from "../components/PokedexTable";
+import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
 
-export function HomePage() {
+interface HomePageProps {
+  catalog: PokemonCatalog;
+}
+
+export function HomePage({ catalog }: HomePageProps) {
   return (
     <main>
-      <h1 className="page-title">Pokedex</h1>
-      <PokedexTable />
+      <PageHero
+        title="National Pokedex"
+        description=""
+      />
+      <PokedexTable catalog={catalog} />
     </main>
   );
 }

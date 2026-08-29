@@ -7,10 +7,12 @@ from app.schemas.pokemon import PokemonRead
 
 class TeamCreate(BaseModel):
     name: str
+    description: str | None = None
 
 
 class TeamUpdate(BaseModel):
     name: str
+    description: str | None = None
 
 
 class TeamRead(BaseModel):
@@ -19,6 +21,7 @@ class TeamRead(BaseModel):
     id: int
     client_id: str
     name: str
+    description: str | None
     created_at: datetime
     updated_at: datetime
 
