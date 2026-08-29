@@ -22,5 +22,5 @@ def get_pokemon(pokemon_id: int, db: Session = Depends(get_db)) -> Pokemon:
     )
     pokemon = db.scalars(stmt).first()
     if pokemon is None:
-        raise HTTPException(status_code=404, detail="Pokemon not found")
+        raise HTTPException(status_code=404, detail="Pokémon not found")
     return pokemon

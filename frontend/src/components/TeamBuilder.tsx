@@ -177,7 +177,7 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
         </label>
 
         <div className="team-builder__field">
-          <span className="team-builder__field-label">Pokemon</span>
+          <span className="team-builder__field-label">Pokémon</span>
           <ol className="team-builder__roster">
             {roster.map((pokemon, index) => (
               <li
@@ -249,7 +249,7 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
                   }}
                 >
                   <span className="team-builder__slot-number">{roster.length + i + 1}</span>
-                  + Add Pokemon
+                  + Add Pokémon
                 </li>
               ),
             )}

@@ -10,18 +10,21 @@ function App() {
   return (
     <>
       <nav className="app-nav">
-        <NavLink
-          to="/pokedex"
-          className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
-        >
-          Pokedex
-        </NavLink>
-        <NavLink
-          to="/teams"
-          className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
-        >
-          Teams
-        </NavLink>
+        <span className="app-nav__brand">Pokétactics</span>
+        <div className="app-nav__tabs">
+          <NavLink
+            to="/pokedex"
+            className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
+          >
+            Pokédex
+          </NavLink>
+          <NavLink
+            to="/teams"
+            className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
+          >
+            Teams
+          </NavLink>
+        </div>
       </nav>
       <Routes>
         <Route path="/" element={<Navigate to="/pokedex" replace />} />

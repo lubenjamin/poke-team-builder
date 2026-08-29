@@ -102,9 +102,9 @@ export function PokedexTable({ catalog }: PokedexTableProps) {
     });
   }
 
-  if (status === "loading") return <p className="pokedex__message">Loading Pokemon...</p>;
+  if (status === "loading") return <p className="pokedex__message">Loading Pokémon...</p>;
   if (status === "error") {
-    return <p className="pokedex__message">Couldn't load Pokemon. Is the backend running?</p>;
+    return <p className="pokedex__message">Couldn't load Pokémon. Is the backend running?</p>;
   }
 
   return (
@@ -138,7 +138,7 @@ export function PokedexTable({ catalog }: PokedexTableProps) {
           Filters
           {selectedTypes.size > 0 && <span className="pokedex__filter-badge">{selectedTypes.size}</span>}
         </button>
-        <span className="pokedex__count">{sorted.length} Pokemon</span>
+        <span className="pokedex__count">{sorted.length} Pokémon</span>
       </div>
 
       <FilterTray open={filtersOpen} onClose={() => setFiltersOpen(false)}>
@@ -203,7 +203,7 @@ export function PokedexTable({ catalog }: PokedexTableProps) {
             {pageItems.length === 0 && (
               <tr>
                 <td colSpan={COLUMNS.length + 2} className="pokedex__message">
-                  No Pokemon match your filters.
+                  No Pokémon match your filters.
                 </td>
               </tr>
             )}

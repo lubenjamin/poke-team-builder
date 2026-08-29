@@ -57,7 +57,7 @@ export function PokemonPicker({ catalog, excludeIds, onAdd, onClose }: PokemonPi
         ref={inputRef}
         type="search"
         className="pokemon-picker__search"
-        placeholder="Search Pokemon..."
+        placeholder="Search Pokémon..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />

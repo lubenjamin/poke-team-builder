@@ -8,12 +8,12 @@ interface HomePageProps {
 }
 
 export function HomePage({ catalog }: HomePageProps) {
-  useDocumentTitle("Pokedex");
+  useDocumentTitle("Pokédex");
 
   return (
     <main>
       <PageHero
-        title="National Pokedex"
+        title="National Pokédex"
         description=""
       />
       <PokedexTable catalog={catalog} />
