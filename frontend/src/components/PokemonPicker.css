@@ -1,0 +1,105 @@
+.pokemon-picker {
+  position: relative;
+}
+
+.pokemon-picker--inline {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.pokemon-picker__search {
+  width: 100%;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.5rem;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.pokemon-picker__results {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  max-height: 320px;
+  overflow-y: auto;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 15;
+  width: 100%;
+  background: var(--bg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.pokemon-picker__result {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.pokemon-picker__result:hover {
+  background: var(--card-bg);
+}
+
+.pokemon-picker li:last-child .pokemon-picker__result {
+  border-bottom: none;
+}
+
+.pokemon-picker__result img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.pokemon-picker__name {
+  flex: 1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.pokemon-picker__types {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pokemon-picker__type-badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.pokemon-picker__empty {
+  margin-top: 0.4rem;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 15;
+  width: 100%;
+  background: var(--bg);
+}

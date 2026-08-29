@@ -29,7 +29,7 @@ def list_teams(
 def create_team(
     body: TeamCreate, client_id: str = Depends(get_client_id), db: Session = Depends(get_db)
 ) -> Team:
-    team = Team(client_id=client_id, name=body.name)
+    team = Team(client_id=client_id, name=body.name, description=body.description)
     db.add(team)
     db.commit()
     db.refresh(team)
@@ -56,7 +56,7 @@ def get_team(
 
 
 @router.patch("/{team_id}", response_model=TeamRead)
-def rename_team(
+def update_team(
     team_id: int,
     body: TeamUpdate,
     client_id: str = Depends(get_client_id),
@@ -64,6 +64,7 @@ def rename_team(
 ) -> Team:
     team = _get_owned_team(team_id, client_id, db)
     team.name = body.name
+    team.description = body.description
     db.commit()
     db.refresh(team)
     return team

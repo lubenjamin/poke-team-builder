@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { fetchAllPokemon } from "../api/pokemon";
+import { useMemo, useState } from "react";
+import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
 import type { Pokemon } from "../types/pokemon";
 import { FilterSection, FilterTray } from "./FilterTray";
 import { TypeFilter } from "./TypeFilter";
@@ -44,9 +44,12 @@ function sortValue(p: Pokemon, field: SortField): string | number {
   return p[field];
 }
 
-export function PokedexTable() {
-  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
-  const [status, setStatus] = useState<"loading" | "error" | "ready">("loading");
+interface PokedexTableProps {
+  catalog: PokemonCatalog;
+}
+
+export function PokedexTable({ catalog }: PokedexTableProps) {
+  const { pokemon, status } = catalog;
 
   const [query, setQuery] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
@@ -54,22 +57,6 @@ export function PokedexTable() {
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchAllPokemon()
-      .then((data) => {
-        if (cancelled) return;
-        setPokemon(data);
-        setStatus("ready");
-      })
-      .catch(() => {
-        if (!cancelled) setStatus("error");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

@@ -1,0 +1,277 @@
+.team-builder {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-builder__details-card {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  background: var(--card-bg);
+}
+
+.team-builder__details-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.team-builder__details-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.team-builder__count {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.team-builder__field {
+  display: block;
+  margin-bottom: 0.9rem;
+}
+
+.team-builder__field:last-of-type {
+  margin-bottom: 0;
+}
+
+.team-builder__field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.team-builder__field-optional {
+  text-transform: none;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.team-builder__char-count {
+  text-transform: none;
+  font-weight: 400;
+  letter-spacing: normal;
+  color: var(--text-muted);
+}
+
+.team-builder__name-input,
+.team-builder__description-input {
+  width: 100%;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.team-builder__name-input {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.team-builder__description-input {
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+.team-builder__details-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.team-builder__save-btn {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.team-builder__save-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.team-builder__error {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+  border-radius: 0.4rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.8rem;
+  margin: 0.75rem 0 0;
+}
+
+.team-builder__roster {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 1.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 84px;
+  gap: 1rem 1.25rem;
+}
+
+/* Two columns, three rows, right column staggered down slightly —
+   mirrors the party-screen layout from the mainline games. transform (not
+   margin) so the offset is purely visual and never perturbs row sizing —
+   that's what kept the two columns' boxes from matching height before. */
+.team-builder__roster > li:nth-child(2n) {
+  transform: translateY(1.75rem);
+}
+
+.team-builder__roster > li:nth-child(2n).team-builder__slot--dragging {
+  transform: translateY(1.75rem) scale(1.04) rotate(-1deg);
+}
+
+.team-builder__slot {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 84px;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--bg);
+  position: relative;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+
+.team-builder__slot[draggable="true"] {
+  cursor: grab;
+}
+
+.team-builder__slot--dragging {
+  opacity: 0.9;
+  transform: scale(1.04) rotate(-1deg);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  cursor: grabbing;
+  position: relative;
+  z-index: 5;
+}
+
+.team-builder__slot-number {
+  position: absolute;
+  top: -0.55rem;
+  left: -0.55rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg);
+  flex-shrink: 0;
+}
+
+.team-builder__drag-handle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.team-builder__slot img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.team-builder__slot-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.team-builder__slot-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.team-builder__slot-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.team-builder__type-badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.team-builder__remove-btn {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  border-radius: 0.4rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  cursor: pointer;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.team-builder__slot--empty {
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.team-builder__slot--empty:hover,
+.team-builder__slot--empty:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.team-builder__slot--searching {
+  border-style: solid;
+  border-color: var(--accent);
+  padding: 0.5rem;
+  z-index: 6;
+}
+
+.team-builder__slot--searching .pokemon-picker--inline {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-builder__message {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
