@@ -1,41 +1,34 @@
-import { useState } from "react";
+import { Navigate, NavLink, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { useDocumentTitle } from "./hooks/useDocumentTitle";
 import { usePokemonCatalog } from "./hooks/usePokemonCatalog";
 import { HomePage } from "./pages/HomePage";
 import { TeamsPage } from "./pages/TeamsPage";
 
-type Tab = "pokedex" | "teams";
-
-const TAB_TITLES: Record<Tab, string> = {
-  pokedex: "Pokedex",
-  teams: "Teams",
-};
-
 function App() {
-  const [tab, setTab] = useState<Tab>("pokedex");
   const catalog = usePokemonCatalog();
-  useDocumentTitle(TAB_TITLES[tab]);
 
   return (
     <>
       <nav className="app-nav">
-        <button
-          type="button"
-          className={`app-nav__tab${tab === "pokedex" ? " app-nav__tab--active" : ""}`}
-          onClick={() => setTab("pokedex")}
+        <NavLink
+          to="/pokedex"
+          className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
         >
           Pokedex
-        </button>
-        <button
-          type="button"
-          className={`app-nav__tab${tab === "teams" ? " app-nav__tab--active" : ""}`}
-          onClick={() => setTab("teams")}
+        </NavLink>
+        <NavLink
+          to="/teams"
+          className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
         >
           Teams
-        </button>
+        </NavLink>
       </nav>
-      {tab === "pokedex" ? <HomePage catalog={catalog} /> : <TeamsPage catalog={catalog} />}
+      <Routes>
+        <Route path="/" element={<Navigate to="/pokedex" replace />} />
+        <Route path="/pokedex" element={<HomePage catalog={catalog} />} />
+        <Route path="/teams" element={<TeamsPage catalog={catalog} />} />
+        <Route path="*" element={<Navigate to="/pokedex" replace />} />
+      </Routes>
     </>
   );
 }

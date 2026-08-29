@@ -3,6 +3,7 @@ import { deleteTeam, fetchTeams } from "../api/teams";
 import { PageHero } from "../components/PageHero";
 import { TeamBuilder } from "../components/TeamBuilder";
 import { TeamList } from "../components/TeamList";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
 import type { Team } from "../types/team";
 import "./TeamsPage.css";
@@ -12,6 +13,7 @@ interface TeamsPageProps {
 }
 
 export function TeamsPage({ catalog }: TeamsPageProps) {
+  useDocumentTitle("Teams");
   const [teams, setTeams] = useState<Team[]>([]);
   const [status, setStatus] = useState<"loading" | "error" | "ready">("loading");
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
