@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const APP_NAME = "Poké Team Builder";
+const APP_NAME = "Pokétactics";
 
 export function useDocumentTitle(section: string): void {
   useEffect(() => {

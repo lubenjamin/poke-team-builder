@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routers import alerts, changes, counter_team, internal, pokemon, teams
 
-app = FastAPI(title="Pokemon Team Builder API")
+app = FastAPI(title="Poketactics API")
 
 app.add_middleware(
     CORSMiddleware,
