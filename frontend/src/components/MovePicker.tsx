@@ -83,7 +83,6 @@ export function MovePicker({ pokemonId, excludeIds, onAdd, onClose }: MovePicker
           {results.map((m) => (
             <li key={m.id}>
               <button type="button" className="move-picker__result" onClick={() => onAdd(m)}>
-                <DamageClassIcon damageClass={m.damage_class} size={14} />
                 <span className="move-picker__name">{m.name.replace(/-/g, " ")}</span>
                 <span
                   className="move-picker__type-badge"
@@ -91,6 +90,7 @@ export function MovePicker({ pokemonId, excludeIds, onAdd, onClose }: MovePicker
                 >
                   {m.type}
                 </span>
+                <DamageClassIcon damageClass={m.damage_class} size={14} />
               </button>
             </li>
           ))}
