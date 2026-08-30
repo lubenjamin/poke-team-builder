@@ -33,17 +33,18 @@
   top: 100%;
   left: 0;
   z-index: 20;
-  width: 220px;
+  width: 250px;
   background: var(--bg);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .move-picker__result {
   display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
   width: 100%;
-  padding: 0.35rem 0.5rem;
+  padding: 0.4rem 0.55rem;
   border: none;
   border-bottom: 1px solid var(--border);
   background: none;
@@ -62,10 +63,17 @@
 }
 
 .move-picker__name {
-  flex: 1;
-  font-size: 0.72rem;
+  width: 100%;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: capitalize;
+  white-space: normal;
+}
+
+.move-picker__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .move-picker__type-badge {
@@ -74,6 +82,16 @@
   font-size: 0.6rem;
   font-weight: 600;
   color: white;
+  text-transform: capitalize;
+  flex-shrink: 0;
+}
+
+.move-picker__damage-class {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  color: var(--text-muted);
   text-transform: capitalize;
 }
 
@@ -89,6 +107,6 @@
   top: 100%;
   left: 0;
   z-index: 20;
-  width: 220px;
+  width: 250px;
   background: var(--bg);
 }

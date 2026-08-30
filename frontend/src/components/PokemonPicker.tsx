@@ -1,19 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
 import type { Pokemon } from "../types/pokemon";
+import { matchesSearch } from "../utils/search";
 import { typeColor } from "./typeColors";
 import "./PokemonPicker.css";
 
 interface PokemonPickerProps {
   catalog: PokemonCatalog;
-  excludeIds: number[];
+  /** National dex numbers already on the roster — a team can only have one
+   * form per species (e.g. base Rotom and Rotom-Wash can't both be added),
+   * so this excludes by species, not by exact form id. */
+  excludeDexNumbers: number[];
   onAdd: (pokemon: Pokemon) => void;
   onClose: () => void;
 }
 
 /** Renders inline in place of the empty slot that triggered it — see
  * TeamBuilder.tsx, which mounts this only for the currently "searching" slot. */
-export function PokemonPicker({ catalog, excludeIds, onAdd, onClose }: PokemonPickerProps) {
+export function PokemonPicker({ catalog, excludeDexNumbers, onAdd, onClose }: PokemonPickerProps) {
   const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,12 +42,11 @@ export function PokemonPicker({ catalog, excludeIds, onAdd, onClose }: PokemonPi
   );
 
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const excluded = new Set(excludeIds);
+    const excluded = new Set(excludeDexNumbers);
     return alphabetical.filter(
-      (p) => !excluded.has(p.id) && (!q || p.name.toLowerCase().includes(q)),
+      (p) => !excluded.has(p.pokedex_number) && matchesSearch(p.name, query),
     );
-  }, [alphabetical, query, excludeIds]);
+  }, [alphabetical, query, excludeDexNumbers]);
 
   return (
     <div

@@ -13,6 +13,7 @@ export interface Pokemon {
   special_attack: number;
   special_defense: number;
   speed: number;
+  learnable_move_ids: number[];
 }
 
 export interface PokemonDetail extends Pokemon {

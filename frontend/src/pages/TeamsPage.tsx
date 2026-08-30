@@ -4,15 +4,17 @@ import { PageHero } from "../components/PageHero";
 import { TeamBuilder } from "../components/TeamBuilder";
 import { TeamList } from "../components/TeamList";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import type { MoveCatalog } from "../hooks/useMoveCatalog";
 import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
 import type { Team } from "../types/team";
 import "./TeamsPage.css";
 
 interface TeamsPageProps {
   catalog: PokemonCatalog;
+  moveCatalog: MoveCatalog;
 }
 
-export function TeamsPage({ catalog }: TeamsPageProps) {
+export function TeamsPage({ catalog, moveCatalog }: TeamsPageProps) {
   useDocumentTitle("Teams");
   const [teams, setTeams] = useState<Team[]>([]);
   const [status, setStatus] = useState<"loading" | "error" | "ready">("loading");
@@ -106,6 +108,7 @@ export function TeamsPage({ catalog }: TeamsPageProps) {
             key={isCreatingNew ? "draft" : selectedTeamId}
             teamId={activeTeamId}
             catalog={catalog}
+            moveCatalog={moveCatalog}
             onSaved={handleSaved}
             onDirtyChange={handleDirtyChange}
           />

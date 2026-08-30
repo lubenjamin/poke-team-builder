@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage";
 import { MoveDetailPage } from "./pages/MoveDetailPage";
 import { MovesPage } from "./pages/MovesPage";
 import { PokemonDetailPage } from "./pages/PokemonDetailPage";
+import { TeamOptimizerPage } from "./pages/TeamOptimizerPage";
 import { TeamsPage } from "./pages/TeamsPage";
 
 function App() {
@@ -35,6 +36,12 @@ function App() {
           >
             Teams
           </NavLink>
+          <NavLink
+            to="/optimizer"
+            className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
+          >
+            Team Optimizer
+          </NavLink>
         </div>
       </nav>
       <Routes>
@@ -43,7 +50,14 @@ function App() {
         <Route path="/moves" element={<MovesPage catalog={moveCatalog} />} />
         <Route path="/moves/:idOrName" element={<MoveDetailPage />} />
         <Route path="/pokemon/:idOrName" element={<PokemonDetailPage />} />
-        <Route path="/teams" element={<TeamsPage catalog={catalog} />} />
+        <Route
+          path="/teams"
+          element={<TeamsPage catalog={catalog} moveCatalog={moveCatalog} />}
+        />
+        <Route
+          path="/optimizer"
+          element={<TeamOptimizerPage catalog={catalog} moveCatalog={moveCatalog} />}
+        />
         <Route path="*" element={<Navigate to="/pokedex" replace />} />
       </Routes>
     </>

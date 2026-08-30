@@ -1,23 +1,36 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { fetchPokemonDetail } from "../api/pokemon";
+import type { CatalogStatus } from "../hooks/useMoveCatalog";
 import type { Move } from "../types/move";
+import type { Pokemon } from "../types/pokemon";
+import { matchesSearch } from "../utils/search";
 import { DamageClassIcon } from "./DamageClassIcon";
 import "./MovePicker.css";
 import { typeColor } from "./typeColors";
 
 interface MovePickerProps {
-  pokemonId: number;
+  pokemon: Pokemon;
+  /** id -> Move, built once from the already-fetched move catalog (see
+   * RosterEditor) so opening the picker never costs a network round trip —
+   * resolving a Pokemon's learnable moves is a synchronous lookup against
+   * data the app already has in memory. */
+  moveById: Map<number, Move>;
+  moveCatalogStatus: CatalogStatus;
   excludeIds: number[];
   onAdd: (move: Move) => void;
   onClose: () => void;
 }
 
 /** Same inline-search-in-place pattern as PokemonPicker, but scoped to one
- * Pokemon's actual movepool (fetched on open) rather than the whole catalog —
- * a Pokemon can only be taught moves it can actually learn. */
-export function MovePicker({ pokemonId, excludeIds, onAdd, onClose }: MovePickerProps) {
-  const [learnableMoves, setLearnableMoves] = useState<Move[]>([]);
-  const [status, setStatus] = useState<"loading" | "error" | "ready">("loading");
+ * Pokemon's actual movepool — resolved client-side from `pokemon.learnable_move_ids`
+ * against the shared move catalog, rather than fetching per Pokemon on open. */
+export function MovePicker({
+  pokemon,
+  moveById,
+  moveCatalogStatus,
+  excludeIds,
+  onAdd,
+  onClose,
+}: MovePickerProps) {
   const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,23 +38,6 @@ export function MovePicker({ pokemonId, excludeIds, onAdd, onClose }: MovePicker
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    setStatus("loading");
-    fetchPokemonDetail(String(pokemonId))
-      .then((data) => {
-        if (cancelled) return;
-        setLearnableMoves([...data.learnable_moves].sort((a, b) => a.name.localeCompare(b.name)));
-        setStatus("ready");
-      })
-      .catch(() => {
-        if (!cancelled) setStatus("error");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [pokemonId]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -53,13 +49,21 @@ export function MovePicker({ pokemonId, excludeIds, onAdd, onClose }: MovePicker
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
+  const learnableMoves = useMemo(() => {
+    const moves: Move[] = [];
+    for (const moveId of pokemon.learnable_move_ids) {
+      const move = moveById.get(moveId);
+      if (move) moves.push(move);
+    }
+    return moves.sort((a, b) => a.name.localeCompare(b.name));
+  }, [pokemon.learnable_move_ids, moveById]);
+
   const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
     const excluded = new Set(excludeIds);
-    return learnableMoves.filter(
-      (m) => !excluded.has(m.id) && (!q || m.name.toLowerCase().includes(q)),
-    );
+    return learnableMoves.filter((m) => !excluded.has(m.id) && matchesSearch(m.name, query));
   }, [learnableMoves, query, excludeIds]);
+
+  const ready = moveCatalogStatus === "ready";
 
   return (
     <div
@@ -73,33 +77,38 @@ export function MovePicker({ pokemonId, excludeIds, onAdd, onClose }: MovePicker
         ref={inputRef}
         type="search"
         className="move-picker__search"
-        placeholder={status === "loading" ? "Loading moves..." : "Search moves..."}
+        placeholder={ready ? "Search moves..." : "Loading moves..."}
         value={query}
-        disabled={status !== "ready"}
+        disabled={!ready}
         onChange={(e) => setQuery(e.target.value)}
       />
-      {status === "ready" && results.length > 0 && (
+      {ready && results.length > 0 && (
         <ul className="move-picker__results">
           {results.map((m) => (
             <li key={m.id}>
               <button type="button" className="move-picker__result" onClick={() => onAdd(m)}>
                 <span className="move-picker__name">{m.name.replace(/-/g, " ")}</span>
-                <span
-                  className="move-picker__type-badge"
-                  style={{ backgroundColor: typeColor(m.type) }}
-                >
-                  {m.type}
+                <span className="move-picker__meta">
+                  <span
+                    className="move-picker__type-badge"
+                    style={{ backgroundColor: typeColor(m.type) }}
+                  >
+                    {m.type}
+                  </span>
+                  <span className="move-picker__damage-class">
+                    <DamageClassIcon damageClass={m.damage_class} size={13} />
+                    {m.damage_class}
+                  </span>
                 </span>
-                <DamageClassIcon damageClass={m.damage_class} size={14} />
               </button>
             </li>
           ))}
         </ul>
       )}
-      {status === "ready" && results.length === 0 && (
-        <div className="move-picker__empty">No matches</div>
+      {ready && results.length === 0 && <div className="move-picker__empty">No matches</div>}
+      {moveCatalogStatus === "error" && (
+        <div className="move-picker__empty">Couldn't load moves</div>
       )}
-      {status === "error" && <div className="move-picker__empty">Couldn't load moves</div>}
     </div>
   );
 }

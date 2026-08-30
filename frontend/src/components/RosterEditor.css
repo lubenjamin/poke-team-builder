@@ -1,0 +1,273 @@
+.roster-editor {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 2.25rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  align-items: start;
+  gap: 1.25rem;
+}
+
+/* Two columns, three rows, right column staggered down slightly —
+   mirrors the party-screen layout from the mainline games. transform (not
+   margin) so the offset is purely visual and never perturbs row sizing —
+   that's what kept the two columns' boxes from matching height before. */
+.roster-editor > li:nth-child(2n) {
+  transform: translateY(2.25rem);
+}
+
+.roster-editor > li:nth-child(2n).roster-editor__slot--dragging {
+  transform: translateY(2.25rem) scale(1.04) rotate(-1deg);
+}
+
+.roster-editor__slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 84px;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--bg);
+  position: relative;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+
+.roster-editor__slot-main {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.roster-editor__slot[draggable="true"] {
+  cursor: grab;
+}
+
+.roster-editor__slot--dragging {
+  opacity: 0.9;
+  transform: scale(1.04) rotate(-1deg);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  cursor: grabbing;
+  position: relative;
+  z-index: 5;
+}
+
+.roster-editor__slot-number {
+  position: absolute;
+  top: -0.55rem;
+  left: -0.55rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg);
+  flex-shrink: 0;
+}
+
+.roster-editor__drag-handle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.roster-editor__slot img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.roster-editor__slot-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.roster-editor__slot-name {
+  align-self: flex-start;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  text-decoration: none;
+  color: var(--text-h);
+}
+
+.roster-editor__slot-name:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.roster-editor__slot-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.roster-editor__type-badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.roster-editor__remove-btn {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  border-radius: 0.4rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  cursor: pointer;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.roster-editor__slot--empty {
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.roster-editor__slot--empty:hover,
+.roster-editor__slot--empty:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+/* The whole slot card is a stacking context (nth-child(2n) above sets a
+   transform on right-column slots), so a high z-index on just the inner
+   move-picker dropdown gets trapped below later sibling cards. Raising the
+   z-index on the slot itself lifts the entire stacking context instead. */
+.roster-editor__slot--move-searching {
+  z-index: 10;
+}
+
+.roster-editor__slot--searching {
+  flex-direction: row;
+  align-items: center;
+  border-style: solid;
+  border-color: var(--accent);
+  padding: 0.5rem;
+  z-index: 6;
+}
+
+.roster-editor__slot--searching .pokemon-picker--inline {
+  flex: 1;
+  min-width: 0;
+}
+
+/* --- per-Pokemon move chips: a 2x2 grid below the main slot row --- */
+
+.roster-editor__moves-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.roster-editor__move-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 1.9rem;
+  border-radius: 0.4rem;
+  font-size: 0.72rem;
+}
+
+.roster-editor__move-chip--filled {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.3rem;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  padding: 0.35rem 1.4rem 0.35rem 0.5rem;
+}
+
+.roster-editor__move-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: capitalize;
+  text-decoration: none;
+  color: var(--text-h);
+  white-space: normal;
+}
+
+.roster-editor__move-name:hover {
+  color: var(--accent);
+}
+
+.roster-editor__move-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.roster-editor__move-type-badge {
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.roster-editor__move-remove {
+  position: absolute;
+  right: 0.3rem;
+  top: 0.3rem;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 0.15rem;
+}
+
+.roster-editor__move-remove:hover {
+  color: #dc2626;
+}
+
+.roster-editor__move-chip--empty {
+  justify-content: center;
+  border: 1px dashed var(--border);
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+}
+
+.roster-editor__move-chip--empty:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.roster-editor__move-chip--empty-readonly {
+  border: 1px dashed var(--border);
+  opacity: 0.35;
+}
+
+.roster-editor__move-chip--searching {
+  border: 1px solid var(--accent);
+  padding: 0.15rem 0.3rem;
+}

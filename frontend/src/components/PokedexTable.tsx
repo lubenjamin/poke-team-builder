@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
 import type { Pokemon } from "../types/pokemon";
+import { matchesSearch } from "../utils/search";
 import { FilterSection, FilterTray } from "./FilterTray";
 import { TypeFilter } from "./TypeFilter";
 import { typeColor } from "./typeColors";
@@ -61,9 +62,8 @@ export function PokedexTable({ catalog }: PokedexTableProps) {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
     return pokemon.filter((p) => {
-      if (q && !p.name.toLowerCase().includes(q)) return false;
+      if (!matchesSearch(p.name, query)) return false;
       if (selectedTypes.size > 0 && !p.types.some((t) => selectedTypes.has(t))) return false;
       return true;
     });

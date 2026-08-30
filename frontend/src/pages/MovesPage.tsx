@@ -5,6 +5,7 @@ import { PageHero } from "../components/PageHero";
 import { TypeFilter } from "../components/TypeFilter";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import type { MoveCatalog } from "../hooks/useMoveCatalog";
+import { matchesSearch } from "../utils/search";
 import "./MovesPage.css";
 
 interface MovesPageProps {
@@ -20,9 +21,8 @@ export function MovesPage({ catalog }: MovesPageProps) {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
     return moves.filter((m) => {
-      if (q && !m.name.toLowerCase().includes(q)) return false;
+      if (!matchesSearch(m.name, query)) return false;
       if (selectedTypes.size > 0 && !selectedTypes.has(m.type)) return false;
       return true;
     });

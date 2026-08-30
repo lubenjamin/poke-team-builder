@@ -56,6 +56,10 @@ export function PokemonDetailPage() {
     .sort((a, b) => a[1] - b[1]);
   const immune = Object.entries(pokemon.type_effectiveness).filter(([, m]) => m === 0);
 
+  const learnableMoves = [...pokemon.learnable_moves].sort(
+    (a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name),
+  );
+
   return (
     <main className="pokemon-detail">
       <div className="pokemon-detail__header">
@@ -102,10 +106,10 @@ export function PokemonDetailPage() {
       </div>
 
       <h2 className="pokemon-detail__section-title">
-        Learnable moves ({pokemon.learnable_moves.length})
+        Learnable moves ({learnableMoves.length})
       </h2>
       <ul className="pokemon-detail__moves">
-        {pokemon.learnable_moves.map((move) => (
+        {learnableMoves.map((move) => (
           <li key={move.id}>
             <Link to={`/moves/${move.name}`} className="pokemon-detail__move-link">
               <span>{move.name.replace(/-/g, " ")}</span>
@@ -119,7 +123,7 @@ export function PokemonDetailPage() {
             </Link>
           </li>
         ))}
-        {pokemon.learnable_moves.length === 0 && (
+        {learnableMoves.length === 0 && (
           <p className="pokemon-detail__message">No moves recorded for this Pokémon.</p>
         )}
       </ul>
