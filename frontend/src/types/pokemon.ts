@@ -1,3 +1,5 @@
+import type { Move } from "./move";
+
 export interface Pokemon {
   id: number;
   name: string;
@@ -11,4 +13,9 @@ export interface Pokemon {
   special_attack: number;
   special_defense: number;
   speed: number;
+}
+
+export interface PokemonDetail extends Pokemon {
+  learnable_moves: Move[];
+  type_effectiveness: Record<string, number>;
 }

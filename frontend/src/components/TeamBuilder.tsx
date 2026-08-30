@@ -1,16 +1,31 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { ApiError } from "../api/client";
 import { createTeam, fetchTeam, replaceRoster, updateTeam } from "../api/teams";
 import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
+import type { Move } from "../types/move";
 import type { Pokemon } from "../types/pokemon";
 import type { Team } from "../types/team";
+import { DamageClassIcon } from "./DamageClassIcon";
+import { MovePicker } from "./MovePicker";
 import { PokemonPicker } from "./PokemonPicker";
-import { typeColor } from "./typeColors";
 import "./TeamBuilder.css";
+import { typeColor } from "./typeColors";
 
 const MAX_ROSTER_SIZE = 6;
+const MAX_MOVES_PER_POKEMON = 4;
 const NAME_MAX_LENGTH = 40;
 const DESCRIPTION_MAX_LENGTH = 2500;
+
+interface RosterSlotState {
+  pokemon: Pokemon;
+  moves: Move[];
+}
+
+interface MoveSearchTarget {
+  rosterIndex: number;
+  moveSlotIndex: number;
+}
 
 interface TeamBuilderProps {
   teamId: number | null; // null = new, unsaved team
@@ -19,20 +34,27 @@ interface TeamBuilderProps {
   onDirtyChange: (dirty: boolean) => void;
 }
 
+function snapshotRoster(roster: RosterSlotState[]): string {
+  return JSON.stringify(
+    roster.map((r) => ({ pokemonId: r.pokemon.id, moveIds: r.moves.map((m) => m.id) })),
+  );
+}
+
 export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBuilderProps) {
   const [status, setStatus] = useState<"loading" | "error" | "ready">(
     teamId === null ? "ready" : "loading",
   );
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [roster, setRoster] = useState<Pokemon[]>([]);
+  const [roster, setRoster] = useState<RosterSlotState[]>([]);
   const [savedName, setSavedName] = useState("");
   const [savedDescription, setSavedDescription] = useState("");
-  const [savedIds, setSavedIds] = useState<number[]>([]);
+  const [savedRosterSnapshot, setSavedRosterSnapshot] = useState("[]");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<number | null>(null);
   const [searchSlotIndex, setSearchSlotIndex] = useState<number | null>(null);
+  const [moveSearchTarget, setMoveSearchTarget] = useState<MoveSearchTarget | null>(null);
 
   useEffect(() => {
     if (teamId === null) {
@@ -41,7 +63,7 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
       setRoster([]);
       setSavedName("");
       setSavedDescription("");
-      setSavedIds([]);
+      setSavedRosterSnapshot("[]");
       setStatus("ready");
       return;
     }
@@ -50,12 +72,16 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
     fetchTeam(teamId)
       .then((data) => {
         if (cancelled) return;
+        const hydrated: RosterSlotState[] = data.roster.map((r) => ({
+          pokemon: r.pokemon,
+          moves: r.moves,
+        }));
         setName(data.name);
         setDescription(data.description ?? "");
-        setRoster(data.roster.map((r) => r.pokemon));
+        setRoster(hydrated);
         setSavedName(data.name);
         setSavedDescription(data.description ?? "");
-        setSavedIds(data.roster.map((r) => r.pokemon.id));
+        setSavedRosterSnapshot(snapshotRoster(hydrated));
         setStatus("ready");
       })
       .catch(() => {
@@ -66,11 +92,11 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
     };
   }, [teamId]);
 
-  const currentIds = roster.map((p) => p.id);
+  const currentIds = roster.map((r) => r.pokemon.id);
   const isDirty =
     name !== savedName ||
     description !== savedDescription ||
-    JSON.stringify(currentIds) !== JSON.stringify(savedIds);
+    snapshotRoster(roster) !== savedRosterSnapshot;
 
   useEffect(() => {
     onDirtyChange(isDirty);
@@ -78,7 +104,7 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
 
   function handleAdd(pokemon: Pokemon) {
     if (roster.length >= MAX_ROSTER_SIZE || currentIds.includes(pokemon.id)) return;
-    setRoster((prev) => [...prev, pokemon]);
+    setRoster((prev) => [...prev, { pokemon, moves: [] }]);
     setSearchSlotIndex(null);
   }
 
@@ -89,11 +115,33 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
   function handleDragOverSlot(targetIndex: number) {
     if (draggedId === null) return;
     setRoster((prev) => {
-      const currentIndex = prev.findIndex((p) => p.id === draggedId);
+      const currentIndex = prev.findIndex((r) => r.pokemon.id === draggedId);
       if (currentIndex === -1 || currentIndex === targetIndex) return prev;
       const next = [...prev];
       const [moved] = next.splice(currentIndex, 1);
       next.splice(targetIndex, 0, moved);
+      return next;
+    });
+  }
+
+  function handleAddMove(rosterIndex: number, move: Move) {
+    setRoster((prev) => {
+      const slot = prev[rosterIndex];
+      if (slot.moves.length >= MAX_MOVES_PER_POKEMON || slot.moves.some((m) => m.id === move.id)) {
+        return prev;
+      }
+      const next = [...prev];
+      next[rosterIndex] = { ...slot, moves: [...slot.moves, move] };
+      return next;
+    });
+    setMoveSearchTarget(null);
+  }
+
+  function handleRemoveMove(rosterIndex: number, moveId: number) {
+    setRoster((prev) => {
+      const slot = prev[rosterIndex];
+      const next = [...prev];
+      next[rosterIndex] = { ...slot, moves: slot.moves.filter((m) => m.id !== moveId) };
       return next;
     });
   }
@@ -115,13 +163,20 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
       } else if (trimmedName !== savedName || description !== savedDescription) {
         await updateTeam(id, trimmedName, trimmedDescription);
       }
-      const updated = await replaceRoster(id, currentIds);
+      const updated = await replaceRoster(
+        id,
+        roster.map((r) => ({ pokemon_id: r.pokemon.id, move_ids: r.moves.map((m) => m.id) })),
+      );
+      const hydrated: RosterSlotState[] = updated.roster.map((r) => ({
+        pokemon: r.pokemon,
+        moves: r.moves,
+      }));
       setName(updated.name);
       setDescription(updated.description ?? "");
-      setRoster(updated.roster.map((r) => r.pokemon));
+      setRoster(hydrated);
       setSavedName(updated.name);
       setSavedDescription(updated.description ?? "");
-      setSavedIds(updated.roster.map((r) => r.pokemon.id));
+      setSavedRosterSnapshot(snapshotRoster(hydrated));
       onSaved(updated);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to save team");
@@ -177,14 +232,14 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
         </label>
 
         <div className="team-builder__field">
-          <span className="team-builder__field-label">Pokémon</span>
+          <span className="team-builder__field-label">Pokémon &amp; Moves</span>
           <ol className="team-builder__roster">
-            {roster.map((pokemon, index) => (
+            {roster.map((slotState, index) => (
               <li
-                key={pokemon.id}
-                className={`team-builder__slot${draggedId === pokemon.id ? " team-builder__slot--dragging" : ""}`}
+                key={slotState.pokemon.id}
+                className={`team-builder__slot${draggedId === slotState.pokemon.id ? " team-builder__slot--dragging" : ""}`}
                 draggable
-                onDragStart={() => setDraggedId(pokemon.id)}
+                onDragStart={() => setDraggedId(slotState.pokemon.id)}
                 onDragOver={(e) => {
                   e.preventDefault();
                   handleDragOverSlot(index);
@@ -193,34 +248,98 @@ export function TeamBuilder({ teamId, catalog, onSaved, onDirtyChange }: TeamBui
                 onDragEnd={() => setDraggedId(null)}
               >
                 <span className="team-builder__slot-number">{index + 1}</span>
-                <span className="team-builder__drag-handle" aria-hidden="true">
-                  ⠿
-                </span>
-                <img src={pokemon.sprite_url} alt={pokemon.name} />
-                <div className="team-builder__slot-info">
-                  <span className="team-builder__slot-name">
-                    {pokemon.name.replace(/-/g, " ")}
+
+                <div className="team-builder__slot-main">
+                  <span className="team-builder__drag-handle" aria-hidden="true">
+                    ⠿
                   </span>
-                  <div className="team-builder__slot-types">
-                    {pokemon.types.map((t) => (
-                      <span
-                        key={t}
-                        className="team-builder__type-badge"
-                        style={{ backgroundColor: typeColor(t) }}
-                      >
-                        {t}
-                      </span>
-                    ))}
+                  <img src={slotState.pokemon.sprite_url} alt={slotState.pokemon.name} />
+                  <div className="team-builder__slot-info">
+                    <Link
+                      to={`/pokemon/${slotState.pokemon.name}`}
+                      className="team-builder__slot-name"
+                    >
+                      {slotState.pokemon.name.replace(/-/g, " ")}
+                    </Link>
+                    <div className="team-builder__slot-types">
+                      {slotState.pokemon.types.map((t) => (
+                        <span
+                          key={t}
+                          className="team-builder__type-badge"
+                          style={{ backgroundColor: typeColor(t) }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
+                  <button
+                    type="button"
+                    className="team-builder__remove-btn"
+                    onClick={() => handleRemove(index)}
+                    aria-label="Remove from team"
+                  >
+                    ✕
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="team-builder__remove-btn"
-                  onClick={() => handleRemove(index)}
-                  aria-label="Remove from team"
-                >
-                  ✕
-                </button>
+
+                <div className="team-builder__moves-grid">
+                  {Array.from({ length: MAX_MOVES_PER_POKEMON }).map((_, moveSlotIndex) => {
+                    const move = slotState.moves[moveSlotIndex];
+                    const isSearching =
+                      moveSearchTarget?.rosterIndex === index &&
+                      moveSearchTarget?.moveSlotIndex === moveSlotIndex;
+
+                    if (isSearching) {
+                      return (
+                        <div
+                          key={moveSlotIndex}
+                          className="team-builder__move-chip team-builder__move-chip--searching"
+                        >
+                          <MovePicker
+                            pokemonId={slotState.pokemon.id}
+                            excludeIds={slotState.moves.map((m) => m.id)}
+                            onAdd={(move) => handleAddMove(index, move)}
+                            onClose={() => setMoveSearchTarget(null)}
+                          />
+                        </div>
+                      );
+                    }
+
+                    if (move) {
+                      return (
+                        <div
+                          key={moveSlotIndex}
+                          className="team-builder__move-chip team-builder__move-chip--filled"
+                        >
+                          <Link to={`/moves/${move.name}`} className="team-builder__move-link">
+                            <DamageClassIcon damageClass={move.damage_class} size={13} />
+                            <span>{move.name.replace(/-/g, " ")}</span>
+                          </Link>
+                          <button
+                            type="button"
+                            className="team-builder__move-remove"
+                            onClick={() => handleRemoveMove(index, move.id)}
+                            aria-label="Remove move"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <button
+                        key={moveSlotIndex}
+                        type="button"
+                        className="team-builder__move-chip team-builder__move-chip--empty"
+                        onClick={() => setMoveSearchTarget({ rosterIndex: index, moveSlotIndex })}
+                      >
+                        + Move
+                      </button>
+                    );
+                  })}
+                </div>
               </li>
             ))}
             {Array.from({ length: MAX_ROSTER_SIZE - roster.length }).map((_, i) =>

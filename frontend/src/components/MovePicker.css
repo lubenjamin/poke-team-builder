@@ -1,0 +1,94 @@
+.move-picker {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.move-picker__search {
+  width: 100%;
+  font: inherit;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.4rem;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.move-picker__search:disabled {
+  opacity: 0.6;
+}
+
+.move-picker__results {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  max-height: 260px;
+  overflow-y: auto;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  width: 220px;
+  background: var(--bg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.move-picker__result {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.move-picker__result:hover {
+  background: var(--card-bg);
+}
+
+.move-picker li:last-child .move-picker__result {
+  border-bottom: none;
+}
+
+.move-picker__name {
+  flex: 1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.move-picker__type-badge {
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.move-picker__empty {
+  margin-top: 0.3rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-align: center;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  width: 220px;
+  background: var(--bg);
+}

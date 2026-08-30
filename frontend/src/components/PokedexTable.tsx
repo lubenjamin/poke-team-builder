@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
 import type { Pokemon } from "../types/pokemon";
 import { FilterSection, FilterTray } from "./FilterTray";
@@ -50,6 +51,7 @@ interface PokedexTableProps {
 
 export function PokedexTable({ catalog }: PokedexTableProps) {
   const { pokemon, status } = catalog;
+  const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
@@ -176,7 +178,11 @@ export function PokedexTable({ catalog }: PokedexTableProps) {
           </thead>
           <tbody>
             {pageItems.map((p) => (
-              <tr key={p.id}>
+              <tr
+                key={p.id}
+                className="pokedex__row"
+                onClick={() => navigate(`/pokemon/${p.name}`)}
+              >
                 <td className="pokedex__dim">{p.pokedex_number}</td>
                 <td className="pokedex__sprite-cell">
                   <img src={p.sprite_url} alt={p.name} loading="lazy" />

@@ -1,3 +1,4 @@
+import type { Move } from "./move";
 import type { Pokemon } from "./pokemon";
 
 export interface Team {
@@ -12,6 +13,7 @@ export interface Team {
 export interface TeamPokemonSlot {
   slot: number;
   pokemon: Pokemon;
+  moves: Move[];
 }
 
 export interface TeamDetail extends Team {

@@ -19,3 +19,13 @@ class TeamPokemon(Base):
 
     team: Mapped["Team"] = relationship(back_populates="roster")
     pokemon: Mapped["Pokemon"] = relationship()
+    move_links: Mapped[list["TeamPokemonMove"]] = relationship(
+        back_populates="team_pokemon", cascade="all, delete-orphan", order_by="TeamPokemonMove.slot"
+    )
+
+    @property
+    def moves(self) -> list["Move"]:
+        """The actual Move rows for this slot, in slot order — `move_links`
+        is the raw join-table relationship (TeamPokemonMove), this flattens
+        it to what callers actually want. Same pattern as Pokemon.pokedex_number."""
+        return [link.move for link in self.move_links]
