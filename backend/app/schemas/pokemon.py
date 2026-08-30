@@ -16,3 +16,23 @@ class PokemonRead(BaseModel):
     special_attack: int
     special_defense: int
     speed: int
+
+
+class MoveRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    type: str
+    damage_class: str
+    power: int | None
+    accuracy: int | None
+    pp: int | None
+    priority: int
+    effect_chance: int | None
+    effect_text: str | None
+
+
+class PokemonDetail(PokemonRead):
+    learnable_moves: list[MoveRead]
+    type_effectiveness: dict[str, float]

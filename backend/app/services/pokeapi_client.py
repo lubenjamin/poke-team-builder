@@ -62,6 +62,40 @@ def fetch_national_pokedex() -> list[dict]:
         raise PokeApiFetchError(f"Failed to fetch national pokedex: {exc}") from exc
     return data["pokemon_entries"]
 
+def fetch_move_universe(limit: int | None = None) -> list[dict]:
+    """Returns [{"name": ..., "url": ...}, ...] from the PokeAPI move index. PokeAPI
+    returns the full move set in one page as long as `limit` >= total count."""
+    page_size = limit if limit is not None else 100_000
+    try:
+        data = _get(f"/move?limit={page_size}&offset=0")
+    except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+        raise PokeApiFetchError(f"Failed to fetch move index: {exc}") from exc
+    return data["results"]
+
+def fetch_move_detail(identifier: int | str) -> dict:
+    try:
+        return _get(f"/move/{identifier}")
+    except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+        raise PokeApiFetchError(f"Failed to fetch move {identifier!r}: {exc}") from exc
+
+def fetch_type_universe() -> list[dict]:
+    """Returns [{"name": ..., "url": ...}, ...] from the PokeAPI type index
+    (~20 entries, including a couple of non-battle pseudo-types like "unknown"
+    and "shadow" — harmless, nothing in our data references them as a real
+    type). No limit param — small enough to always fetch in full."""
+    try:
+        data = _get("/type?limit=100&offset=0")
+    except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+        raise PokeApiFetchError(f"Failed to fetch type index: {exc}") from exc
+    return data["results"]
+
+
+def fetch_type_detail(identifier: int | str) -> dict:
+    try:
+        return _get(f"/type/{identifier}")
+    except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+        raise PokeApiFetchError(f"Failed to fetch type {identifier!r}: {exc}") from exc
+
 
 def extract_id_from_url(url: str) -> int:
     """PokeAPI resource URLs end in '.../<id>/' — pull the id out."""

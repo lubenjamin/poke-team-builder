@@ -88,6 +88,10 @@
   z-index: 1;
 }
 
+.pokedex__row {
+  cursor: pointer;
+}
+
 .pokedex__table tbody tr:hover {
   background: var(--card-bg);
 }

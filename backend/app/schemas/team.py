@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.schemas.pokemon import PokemonRead
+from app.schemas.pokemon import MoveRead, PokemonRead
 
 
 class TeamCreate(BaseModel):
@@ -31,18 +31,32 @@ class TeamPokemonRead(BaseModel):
 
     slot: int
     pokemon: PokemonRead
+    moves: list[MoveRead]
 
 
 class TeamDetail(TeamRead):
     roster: list[TeamPokemonRead]
 
 
-class RosterReplace(BaseModel):
-    pokemon_ids: list[int] = Field(max_length=6)
+class RosterSlotInput(BaseModel):
+    pokemon_id: int
+    move_ids: list[int] = Field(default_factory=list, max_length=4)
 
-    @field_validator("pokemon_ids")
+    @field_validator("move_ids")
     @classmethod
-    def no_duplicates(cls, value: list[int]) -> list[int]:
+    def no_duplicate_moves(cls, value: list[int]) -> list[int]:
         if len(set(value)) != len(value):
-            raise ValueError("pokemon_ids must not contain duplicates")
+            raise ValueError("move_ids must not contain duplicates")
+        return value
+
+
+class RosterReplace(BaseModel):
+    slots: list[RosterSlotInput] = Field(max_length=6)
+
+    @field_validator("slots")
+    @classmethod
+    def no_duplicate_pokemon(cls, value: list[RosterSlotInput]) -> list[RosterSlotInput]:
+        pokemon_ids = [slot.pokemon_id for slot in value]
+        if len(set(pokemon_ids)) != len(pokemon_ids):
+            raise ValueError("a roster cannot contain the same pokemon_id twice")
         return value
