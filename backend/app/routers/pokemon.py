@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/pokemon", tags=["pokemon"])
 
 
 def _get_pokemon_by_id_or_name(id_or_name: str, db: Session) -> Pokemon | None:
-    stmt = select(Pokemon).options(selectinload(Pokemon.species))
+    stmt = select(Pokemon).options(selectinload(Pokemon.species), selectinload(Pokemon.movepool))
     try:
         pokemon_id = int(id_or_name)
     except ValueError:
@@ -23,7 +23,15 @@ def _get_pokemon_by_id_or_name(id_or_name: str, db: Session) -> Pokemon | None:
 
 @router.get("", response_model=list[PokemonRead])
 def list_pokemon(db: Session = Depends(get_db)) -> list[Pokemon]:
-    stmt = select(Pokemon).options(selectinload(Pokemon.species)).order_by(Pokemon.id)
+    # selectinload(movepool) batches into one extra query for the whole list
+    # (not N+1) so learnable_move_ids is free on every row — this lets the
+    # move picker resolve a Pokemon's learnable moves entirely client-side
+    # from the catalog it already fetched once, with no per-open network call.
+    stmt = (
+        select(Pokemon)
+        .options(selectinload(Pokemon.species), selectinload(Pokemon.movepool))
+        .order_by(Pokemon.id)
+    )
     return list(db.scalars(stmt))
 
 
