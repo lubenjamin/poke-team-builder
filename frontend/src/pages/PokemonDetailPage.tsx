@@ -108,7 +108,6 @@ export function PokemonDetailPage() {
         {pokemon.learnable_moves.map((move) => (
           <li key={move.id}>
             <Link to={`/moves/${move.name}`} className="pokemon-detail__move-link">
-              <DamageClassIcon damageClass={move.damage_class} size={16} />
               <span>{move.name.replace(/-/g, " ")}</span>
               <span
                 className="pokemon-detail__move-type"
@@ -116,6 +115,7 @@ export function PokemonDetailPage() {
               >
                 {move.type}
               </span>
+              <DamageClassIcon damageClass={move.damage_class} size={16} />
             </Link>
           </li>
         ))}
