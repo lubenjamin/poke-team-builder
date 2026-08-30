@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.db import get_db
 from app.dependencies import get_client_id
-from app.models import Move, Pokemon, PokemonMovepool, Team, TeamPokemon, TeamPokemonMove
+from app.models import Pokemon, Team, TeamPokemon, TeamPokemonMove
+from app.routers.roster_validation import validate_roster_slots
 from app.schemas.team import RosterReplace, TeamCreate, TeamDetail, TeamRead, TeamUpdate
 
 router = APIRouter(prefix="/api/teams", tags=["teams"])
@@ -46,6 +47,9 @@ def get_team(
         .options(
             selectinload(Team.roster).selectinload(TeamPokemon.pokemon).selectinload(
                 Pokemon.species
+            ),
+            selectinload(Team.roster).selectinload(TeamPokemon.pokemon).selectinload(
+                Pokemon.movepool
             ),
             selectinload(Team.roster).selectinload(TeamPokemon.move_links).selectinload(
                 TeamPokemonMove.move
@@ -90,44 +94,7 @@ def replace_roster(
     db: Session = Depends(get_db),
 ) -> Team:
     team = _get_owned_team(team_id, client_id, db)
-
-    pokemon_ids = [slot.pokemon_id for slot in body.slots]
-    if pokemon_ids:
-        found_pokemon_ids = set(db.scalars(select(Pokemon.id).where(Pokemon.id.in_(pokemon_ids))))
-        missing_pokemon = set(pokemon_ids) - found_pokemon_ids
-        if missing_pokemon:
-            raise HTTPException(
-                status_code=422, detail=f"Unknown pokemon_ids: {sorted(missing_pokemon)}"
-            )
-
-    all_move_ids = {move_id for slot in body.slots for move_id in slot.move_ids}
-    if all_move_ids:
-        found_move_ids = set(db.scalars(select(Move.id).where(Move.id.in_(all_move_ids))))
-        missing_moves = all_move_ids - found_move_ids
-        if missing_moves:
-            raise HTTPException(
-                status_code=422, detail=f"Unknown move_ids: {sorted(missing_moves)}"
-            )
-
-    for slot in body.slots:
-        if not slot.move_ids:
-            continue
-        learnable = set(
-            db.scalars(
-                select(PokemonMovepool.move_id).where(
-                    PokemonMovepool.pokemon_id == slot.pokemon_id,
-                    PokemonMovepool.move_id.in_(slot.move_ids),
-                )
-            )
-        )
-        not_learnable = set(slot.move_ids) - learnable
-        if not_learnable:
-            raise HTTPException(
-                status_code=422,
-                detail=(
-                    f"Pokemon {slot.pokemon_id} cannot learn move_ids: {sorted(not_learnable)}"
-                ),
-            )
+    validate_roster_slots(db, body.slots)
 
     team.roster.clear()
     db.flush()

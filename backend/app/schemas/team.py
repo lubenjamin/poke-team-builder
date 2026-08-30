@@ -50,13 +50,30 @@ class RosterSlotInput(BaseModel):
         return value
 
 
+def _check_no_duplicate_pokemon(slots: list[RosterSlotInput]) -> list[RosterSlotInput]:
+    pokemon_ids = [slot.pokemon_id for slot in slots]
+    if len(set(pokemon_ids)) != len(pokemon_ids):
+        raise ValueError("a roster cannot contain the same pokemon_id twice")
+    return slots
+
+
 class RosterReplace(BaseModel):
     slots: list[RosterSlotInput] = Field(max_length=6)
 
     @field_validator("slots")
     @classmethod
     def no_duplicate_pokemon(cls, value: list[RosterSlotInput]) -> list[RosterSlotInput]:
-        pokemon_ids = [slot.pokemon_id for slot in value]
-        if len(set(pokemon_ids)) != len(pokemon_ids):
-            raise ValueError("a roster cannot contain the same pokemon_id twice")
-        return value
+        return _check_no_duplicate_pokemon(value)
+
+
+class CounterTeamRequest(BaseModel):
+    """The opponent's team, submitted to generate a counter team against.
+    Unlike RosterReplace (which allows saving an empty roster), this requires
+    at least one Pokemon — there's nothing to counter otherwise."""
+
+    slots: list[RosterSlotInput] = Field(min_length=1, max_length=6)
+
+    @field_validator("slots")
+    @classmethod
+    def no_duplicate_pokemon(cls, value: list[RosterSlotInput]) -> list[RosterSlotInput]:
+        return _check_no_duplicate_pokemon(value)

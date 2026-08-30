@@ -16,6 +16,7 @@ class PokemonRead(BaseModel):
     special_attack: int
     special_defense: int
     speed: int
+    learnable_move_ids: list[int]
 
 
 class MoveRead(BaseModel):
