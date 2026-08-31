@@ -1,0 +1,143 @@
+.change-log__message {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.change-log__filters {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1rem 1rem;
+}
+
+.change-log__filter-btn {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.change-log__filter-btn--active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.change-log__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.change-log__row {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) minmax(100px, 0.7fr) minmax(160px, 1.4fr) minmax(
+      120px,
+      0.8fr
+    );
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+}
+
+.change-log__entity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-h);
+  font-weight: 600;
+  text-transform: capitalize;
+  min-width: 0;
+}
+
+.change-log__entity img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.change-log__entity:hover {
+  color: var(--accent);
+}
+
+.change-log__move-type-badge {
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+  flex-shrink: 0;
+}
+
+.change-log__entity--unknown {
+  color: var(--text-muted);
+  font-weight: 400;
+  text-transform: none;
+}
+
+.change-log__field {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.change-log__diff {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  min-width: 0;
+}
+
+.change-log__old {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.change-log__arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.change-log__new {
+  color: var(--text-h);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.change-log__timestamp {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .change-log__row {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .change-log__timestamp {
+    text-align: left;
+  }
+}

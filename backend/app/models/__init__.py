@@ -2,6 +2,7 @@ from app.models.alert import Alert
 from app.models.change_log import PokemonChangeLog
 from app.models.ingestion_error import IngestionError
 from app.models.move import Move
+from app.models.move_change_log import MoveChangeLog
 from app.models.pokemon import Pokemon
 from app.models.pokemon_movepool import PokemonMovepool
 from app.models.pokemon_species import PokemonSpecies
@@ -14,6 +15,7 @@ __all__ = [
     "Alert",
     "IngestionError",
     "Move",
+    "MoveChangeLog",
     "Pokemon",
     "PokemonChangeLog",
     "PokemonMovepool",

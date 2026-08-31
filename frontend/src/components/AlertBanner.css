@@ -1,0 +1,70 @@
+.alert-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem 0;
+}
+
+.alert-banner__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--accent);
+  border-left-width: 4px;
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+}
+
+.alert-banner__sprite {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.alert-banner__text {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--text-h);
+}
+
+.alert-banner__pokemon-name {
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.alert-banner__pokemon-name:hover {
+  text-decoration: underline;
+}
+
+.alert-banner__move-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.alert-banner__move-link:hover {
+  text-decoration: underline;
+}
+
+.alert-banner__dismiss {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.2rem;
+  flex-shrink: 0;
+}
+
+.alert-banner__dismiss:hover {
+  color: #dc2626;
+}

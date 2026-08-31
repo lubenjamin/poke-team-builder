@@ -12,3 +12,14 @@ class ChangeLogRead(BaseModel):
     old_value: str
     new_value: str
     detected_at: datetime
+
+
+class MoveChangeLogRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    move_id: int
+    field_name: str
+    old_value: str
+    new_value: str
+    detected_at: datetime

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Literal
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -242,27 +242,56 @@ def _upsert_or_reject(
     return IngestResult(entity_id=entity_id, status="written")
 
 
-def _sync_movepool(db: Session, transformed_pokemon: dict) -> None:
-    """Populates pokemon_movepool for one Pokemon from the move ids
-    transform_pokemon stashed in `_movepool_move_ids`. Skips any move id not
-    already present in `move` (e.g. one that failed validation during
-    sync_moves) rather than risk an FK violation, and skips ones already
-    recorded so re-running a sync stays idempotent. Doesn't commit, same
-    reasoning as _upsert_or_reject."""
+def sync_movepool(
+    db: Session, transformed_pokemon: dict, existing_move_ids: set[int] | None = None
+) -> tuple[set[int], set[int]]:
+    """Syncs pokemon_movepool for one Pokemon against the move ids
+    transform_pokemon stashed in `_movepool_move_ids` — both directions: adds
+    newly-learnable moves and removes ones no longer learnable (previously
+    this only ever added, so a shrinking movepool left stale rows behind
+    indefinitely). Skips adding any move id not already present in `move`
+    (e.g. one that failed validation during sync_moves) rather than risk an
+    FK violation. Doesn't commit, same reasoning as _upsert_or_reject.
+
+    `existing_move_ids` lets a caller that already has the current
+    pokemon_movepool rows in memory (the scan path, which bulk-fetches this
+    for the whole batch up front) skip the redundant query here; other
+    callers leave it None and it's queried as before.
+
+    Returns (added, removed) move ids — added is the subset actually written
+    (after the known-move-id filter), so it never claims a move was added
+    when it wasn't. A caller that cares (the scan path, which logs both as
+    PokemonChangeLog rows and unassigns removed ones from any team that has
+    them equipped) can react — callers that don't (sync_pokemon,
+    ingest_pokemon_payload) just discard the return value."""
     pokemon_id = transformed_pokemon["id"]
-    move_ids = transformed_pokemon.get("_movepool_move_ids") or []
-    if not move_ids:
-        return
+    fetched_move_ids = set(transformed_pokemon.get("_movepool_move_ids") or [])
 
-    known_move_ids = set(db.scalars(select(Move.id).where(Move.id.in_(move_ids))))
-    existing_move_ids = set(
-        db.scalars(
-            select(PokemonMovepool.move_id).where(PokemonMovepool.pokemon_id == pokemon_id)
+    if existing_move_ids is None:
+        existing_move_ids = set(
+            db.scalars(
+                select(PokemonMovepool.move_id).where(PokemonMovepool.pokemon_id == pokemon_id)
+            )
         )
-    )
 
-    for move_id in known_move_ids - existing_move_ids:
-        db.add(PokemonMovepool(pokemon_id=pokemon_id, move_id=move_id))
+    candidates = fetched_move_ids - existing_move_ids
+    removed = existing_move_ids - fetched_move_ids
+
+    added: set[int] = set()
+    if candidates:
+        added = set(db.scalars(select(Move.id).where(Move.id.in_(candidates))))
+        for move_id in added:
+            db.add(PokemonMovepool(pokemon_id=pokemon_id, move_id=move_id))
+
+    if removed:
+        db.execute(
+            delete(PokemonMovepool).where(
+                PokemonMovepool.pokemon_id == pokemon_id,
+                PokemonMovepool.move_id.in_(removed),
+            )
+        )
+
+    return added, removed
 
 
 # ---------------------------------------------------------------------------
@@ -411,7 +440,7 @@ def sync_pokemon(
 
         if result.status == "written":
             summary.written += 1
-            _sync_movepool(db, transformed)
+            sync_movepool(db, transformed)
         else:
             summary.rejected += 1
             logger.warning("pokemon: rejected %s: %s", result.entity_id, result.reason)
@@ -423,20 +452,35 @@ def sync_pokemon(
     return summary
 
 
+def ingest_pokemon_payload(
+    raw: dict, db: Session, source: IngestionSource, commit: bool = True
+) -> IngestResult:
+    """transform -> validate -> write for an already-fetched raw payload —
+    split out of ingest_pokemon so a caller that fetches many Pokemon
+    concurrently (change_detection.py's scan, which fetches via a thread
+    pool since that part is pure network I/O) can reuse this write path
+    without re-fetching. `commit=True` by default (immediate, like
+    ingest_pokemon) since there's normally no batch to amortize the round-
+    trip against — a bulk caller processing many rows in a loop should pass
+    commit=False and batch its own commits periodically instead, the same
+    reasoning sync_pokemon already applies (see its docstring): a Neon round
+    trip per row adds up fast across a large catalog."""
+    transformed = transform_pokemon(raw)
+    result = _upsert_or_reject(db, Pokemon, "pokemon", transformed, raw, validate_pokemon, source)
+    if result.status == "written":
+        sync_movepool(db, transformed)
+    if commit:
+        db.commit()
+    return result
+
+
 def ingest_pokemon(identifier: int | str, db: Session, source: IngestionSource) -> IngestResult:
-    """Single-Pokemon fetch -> transform -> validate -> write, for the scan
-    job's future one-at-a-time re-checks (sync_pokemon covers the
-    full-catalog case). Commits immediately — there's no batch here to
-    amortize the round-trip against.
+    """Single-Pokemon fetch -> transform -> validate -> write, for one-at-a-
+    time re-checks (sync_pokemon covers the full-catalog batch case).
 
     Raises PokeApiFetchError on a transient fetch failure — that's the
     caller's concern (retry/skip at the job level), not a validation failure,
     so it is never logged to ingestion_errors.
     """
     raw = fetch_pokemon_detail(identifier)
-    transformed = transform_pokemon(raw)
-    result = _upsert_or_reject(db, Pokemon, "pokemon", transformed, raw, validate_pokemon, source)
-    if result.status == "written":
-        _sync_movepool(db, transformed)
-    db.commit()
-    return result
+    return ingest_pokemon_payload(raw, db, source)

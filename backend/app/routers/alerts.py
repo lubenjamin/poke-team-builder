@@ -20,7 +20,6 @@ _ACTIVE_ALERTS_SQL = text(
       AND team_pokemon.pokemon_id = alerts.pokemon_id
     WHERE alerts.client_id = :client_id
       AND alerts.dismissed = false
-      AND alerts.created_at > now() - interval '7 days'
     ORDER BY alerts.created_at DESC
     """
 )
