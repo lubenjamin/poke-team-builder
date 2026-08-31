@@ -15,6 +15,13 @@ export async function fetchPokemonCatalogVersion(): Promise<string> {
   return result.version ?? "";
 }
 
+/** {pokemon_id: learnable move ids} for the whole catalog — split out of
+ * the main catalog fetch since only the team builder's move picker needs
+ * it; see usePokemonMovepool for the lazy, cached fetch wrapper. */
+export function fetchPokemonMovepool(): Promise<Record<number, number[]>> {
+  return apiFetch<Record<number, number[]>>("/api/pokemon/movepool", { withClientId: false });
+}
+
 export function fetchPokemonDetail(idOrName: string): Promise<PokemonDetail> {
   return apiFetch<PokemonDetail>(`/api/pokemon/${idOrName}`, { withClientId: false });
 }

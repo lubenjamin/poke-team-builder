@@ -11,7 +11,7 @@ router = APIRouter(prefix="/api/pokemon", tags=["pokemon"])
 
 
 def _get_pokemon_by_id_or_name(id_or_name: str, db: Session) -> Pokemon | None:
-    stmt = select(Pokemon).options(selectinload(Pokemon.species), selectinload(Pokemon.movepool))
+    stmt = select(Pokemon).options(selectinload(Pokemon.species))
     try:
         pokemon_id = int(id_or_name)
     except ValueError:
@@ -23,15 +23,7 @@ def _get_pokemon_by_id_or_name(id_or_name: str, db: Session) -> Pokemon | None:
 
 @router.get("", response_model=list[PokemonRead])
 def list_pokemon(db: Session = Depends(get_db)) -> list[Pokemon]:
-    # selectinload(movepool) batches into one extra query for the whole list
-    # (not N+1) so learnable_move_ids is free on every row — this lets the
-    # move picker resolve a Pokemon's learnable moves entirely client-side
-    # from the catalog it already fetched once, with no per-open network call.
-    stmt = (
-        select(Pokemon)
-        .options(selectinload(Pokemon.species), selectinload(Pokemon.movepool))
-        .order_by(Pokemon.id)
-    )
+    stmt = select(Pokemon).options(selectinload(Pokemon.species)).order_by(Pokemon.id)
     return list(db.scalars(stmt))
 
 
@@ -42,12 +34,29 @@ def get_pokemon_catalog_version(db: Session = Depends(get_db)) -> PokemonCatalog
     found a change (unlike last_fetched_at, which touches on every scan
     regardless of outcome). A client compares this against whatever it
     cached alongside its stored copy of the full catalog, and only re-fetches
-    the ~800KB /api/pokemon payload if it doesn't match.
+    the /api/pokemon payload if it doesn't match.
 
     Registered before /{id_or_name} below — it must be, since that route
     would otherwise swallow "version" as a literal id_or_name lookup."""
     version = db.scalar(select(func.max(PokemonChangeLog.detected_at)))
     return PokemonCatalogVersion(version=version.isoformat() if version else None)
+
+
+@router.get("/movepool", response_model=dict[int, list[int]])
+def get_pokemon_movepool_map(db: Session = Depends(get_db)) -> dict[int, list[int]]:
+    """{pokemon_id: [learnable move ids]} for the whole catalog — split out
+    of the main /api/pokemon list (which every page pays for, Pokedex
+    included) since only the team builder's move picker actually needs this.
+    Fetched lazily, once, by usePokemonMovepool on the frontend — only when
+    a team-builder-related page actually mounts it, not on every app load.
+
+    Registered before /{id_or_name} for the same reason /version is."""
+    result: dict[int, list[int]] = {}
+    for pokemon_id, move_id in db.execute(
+        select(PokemonMovepool.pokemon_id, PokemonMovepool.move_id)
+    ).all():
+        result.setdefault(pokemon_id, []).append(move_id)
+    return result
 
 
 @router.get("/{id_or_name}", response_model=PokemonDetail)

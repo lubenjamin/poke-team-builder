@@ -1,32 +1,35 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CatalogStatus } from "../hooks/useMoveCatalog";
 import type { Move } from "../types/move";
-import type { Pokemon } from "../types/pokemon";
 import { matchesSearch } from "../utils/search";
 import { DamageClassIcon } from "./DamageClassIcon";
 import "./MovePicker.css";
 import { typeColor } from "./typeColors";
 
 interface MovePickerProps {
-  pokemon: Pokemon;
-  /** id -> Move, built once from the already-fetched move catalog (see
-   * RosterEditor) so opening the picker never costs a network round trip —
-   * resolving a Pokemon's learnable moves is a synchronous lookup against
-   * data the app already has in memory. */
+  /** This Pokemon's learnable move ids, from usePokemonMovepool (see
+   * RosterEditor) — fetched lazily/once and shared across the session, so
+   * opening the picker never costs a per-open network round trip. */
+  learnableMoveIds: number[];
+  /** id -> Move, built once from the already-fetched move catalog. */
   moveById: Map<number, Move>;
   moveCatalogStatus: CatalogStatus;
+  /** Status of the learnableMoveIds fetch itself — both this and the move
+   * catalog need to be ready before results can be trusted. */
+  movepoolStatus: CatalogStatus;
   excludeIds: number[];
   onAdd: (move: Move) => void;
   onClose: () => void;
 }
 
 /** Same inline-search-in-place pattern as PokemonPicker, but scoped to one
- * Pokemon's actual movepool — resolved client-side from `pokemon.learnable_move_ids`
- * against the shared move catalog, rather than fetching per Pokemon on open. */
+ * Pokemon's actual movepool — resolved client-side from the already-fetched
+ * movepool map and move catalog, rather than fetching per Pokemon on open. */
 export function MovePicker({
-  pokemon,
+  learnableMoveIds,
   moveById,
   moveCatalogStatus,
+  movepoolStatus,
   excludeIds,
   onAdd,
   onClose,
@@ -51,19 +54,20 @@ export function MovePicker({
 
   const learnableMoves = useMemo(() => {
     const moves: Move[] = [];
-    for (const moveId of pokemon.learnable_move_ids) {
+    for (const moveId of learnableMoveIds) {
       const move = moveById.get(moveId);
       if (move) moves.push(move);
     }
     return moves.sort((a, b) => a.name.localeCompare(b.name));
-  }, [pokemon.learnable_move_ids, moveById]);
+  }, [learnableMoveIds, moveById]);
 
   const results = useMemo(() => {
     const excluded = new Set(excludeIds);
     return learnableMoves.filter((m) => !excluded.has(m.id) && matchesSearch(m.name, query));
   }, [learnableMoves, query, excludeIds]);
 
-  const ready = moveCatalogStatus === "ready";
+  const ready = moveCatalogStatus === "ready" && movepoolStatus === "ready";
+  const errored = moveCatalogStatus === "error" || movepoolStatus === "error";
 
   return (
     <div
@@ -106,9 +110,7 @@ export function MovePicker({
         </ul>
       )}
       {ready && results.length === 0 && <div className="move-picker__empty">No matches</div>}
-      {moveCatalogStatus === "error" && (
-        <div className="move-picker__empty">Couldn't load moves</div>
-      )}
+      {errored && <div className="move-picker__empty">Couldn't load moves</div>}
     </div>
   );
 }

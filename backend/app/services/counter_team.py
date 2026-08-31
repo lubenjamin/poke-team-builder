@@ -25,7 +25,7 @@ def generate_random_team(db: Session, team_size: int) -> list[TeamPokemonRead]:
     shuffled = list(
         db.scalars(
             select(Pokemon)
-            .options(selectinload(Pokemon.species), selectinload(Pokemon.movepool))
+            .options(selectinload(Pokemon.species))
             .order_by(func.random())
         )
     )

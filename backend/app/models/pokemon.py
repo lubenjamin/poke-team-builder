@@ -36,12 +36,7 @@ class Pokemon(Base):
     )
 
     species: Mapped["PokemonSpecies"] = relationship()
-    movepool: Mapped[list["PokemonMovepool"]] = relationship(viewonly=True)
 
     @property
     def pokedex_number(self) -> int:
         return self.species.national_dex_number
-
-    @property
-    def learnable_move_ids(self) -> list[int]:
-        return [entry.move_id for entry in self.movepool]

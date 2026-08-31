@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { MoveCatalog } from "../hooks/useMoveCatalog";
 import type { PokemonCatalog } from "../hooks/usePokemonCatalog";
+import { usePokemonMovepool } from "../hooks/usePokemonMovepool";
 import type { Move } from "../types/move";
 import type { Pokemon } from "../types/pokemon";
 import { DamageClassIcon } from "./DamageClassIcon";
@@ -59,6 +60,11 @@ export function RosterEditor({
     () => new Map(moveCatalog.moves.map((m) => [m.id, m] as const)),
     [moveCatalog.moves],
   );
+
+  // Fetched lazily (only Team Builder / Team Optimizer mount this), cached
+  // at module scope so this doesn't re-fetch per RosterEditor instance —
+  // see usePokemonMovepool.
+  const movepool = usePokemonMovepool();
 
   const currentDexNumbers = roster.map((r) => r.pokemon.pokedex_number);
 
@@ -178,9 +184,10 @@ export function RosterEditor({
                     className="roster-editor__move-chip roster-editor__move-chip--searching"
                   >
                     <MovePicker
-                      pokemon={slotState.pokemon}
+                      learnableMoveIds={movepool.data[slotState.pokemon.id] ?? []}
                       moveById={moveById}
                       moveCatalogStatus={moveCatalog.status}
+                      movepoolStatus={movepool.status}
                       excludeIds={slotState.moves.map((m) => m.id)}
                       onAdd={(move) => handleAddMove(index, move)}
                       onClose={() => setMoveSearchTarget(null)}

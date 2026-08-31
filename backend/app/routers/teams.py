@@ -48,9 +48,6 @@ def get_team(
             selectinload(Team.roster).selectinload(TeamPokemon.pokemon).selectinload(
                 Pokemon.species
             ),
-            selectinload(Team.roster).selectinload(TeamPokemon.pokemon).selectinload(
-                Pokemon.movepool
-            ),
             selectinload(Team.roster).selectinload(TeamPokemon.move_links).selectinload(
                 TeamPokemonMove.move
             ),

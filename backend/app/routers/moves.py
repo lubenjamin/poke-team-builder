@@ -36,7 +36,7 @@ def get_move(id_or_name: str, db: Session = Depends(get_db)) -> MoveDetail:
         select(Pokemon)
         .join(PokemonMovepool, PokemonMovepool.pokemon_id == Pokemon.id)
         .where(PokemonMovepool.move_id == move.id)
-        .options(selectinload(Pokemon.species), selectinload(Pokemon.movepool))
+        .options(selectinload(Pokemon.species))
         .order_by(Pokemon.id)
     )
     learnable_by = list(db.scalars(stmt))
