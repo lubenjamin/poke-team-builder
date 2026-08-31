@@ -1,0 +1,30 @@
+name: Scan for move changes
+
+on:
+  schedule:
+    # Every 6 hours, same as scan-pokemon-schedule.yml initially — but kept
+    # as an independent workflow/cadence since move data has a different
+    # real-world PokeAPI update cadence than Pokemon data.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Optional: cap how many cached moves are re-checked (fast demo run instead of the full catalog)"
+        required: false
+        default: ""
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger move change-detection scan
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          INTERNAL_API_SECRET: ${{ secrets.INTERNAL_API_SECRET }}
+          SCAN_LIMIT: ${{ github.event.inputs.limit }}
+        run: |
+          url="$BACKEND_URL/api/internal/scan-moves"
+          if [ -n "$SCAN_LIMIT" ]; then
+            url="${url}?limit=${SCAN_LIMIT}"
+          fi
+          curl -sf -X POST "$url" -H "X-Internal-Secret: $INTERNAL_API_SECRET"

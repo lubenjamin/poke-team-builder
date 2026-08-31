@@ -1,7 +1,10 @@
 import { Navigate, NavLink, Route, Routes } from "react-router-dom";
 import "./App.css";
+import { AlertBanner } from "./components/AlertBanner";
 import { useMoveCatalog } from "./hooks/useMoveCatalog";
 import { usePokemonCatalog } from "./hooks/usePokemonCatalog";
+import { ChangeLogPage } from "./pages/ChangeLogPage";
+import { DevToolsPage } from "./pages/DevToolsPage";
 import { HomePage } from "./pages/HomePage";
 import { MoveDetailPage } from "./pages/MoveDetailPage";
 import { MovesPage } from "./pages/MovesPage";
@@ -42,8 +45,21 @@ function App() {
           >
             Team Optimizer
           </NavLink>
+          <NavLink
+            to="/changes"
+            className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
+          >
+            Change Log
+          </NavLink>
+          <NavLink
+            to="/dev-tools"
+            className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
+          >
+            Dev Tools
+          </NavLink>
         </div>
       </nav>
+      <AlertBanner catalog={catalog} moveCatalog={moveCatalog} />
       <Routes>
         <Route path="/" element={<Navigate to="/pokedex" replace />} />
         <Route path="/pokedex" element={<HomePage catalog={catalog} />} />
@@ -57,6 +73,14 @@ function App() {
         <Route
           path="/optimizer"
           element={<TeamOptimizerPage catalog={catalog} moveCatalog={moveCatalog} />}
+        />
+        <Route
+          path="/changes"
+          element={<ChangeLogPage catalog={catalog} moveCatalog={moveCatalog} />}
+        />
+        <Route
+          path="/dev-tools"
+          element={<DevToolsPage catalog={catalog} moveCatalog={moveCatalog} />}
         />
         <Route path="*" element={<Navigate to="/pokedex" replace />} />
       </Routes>
