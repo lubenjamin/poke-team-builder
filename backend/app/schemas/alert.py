@@ -9,6 +9,8 @@ class AlertRead(BaseModel):
     id: int
     team_id: int
     pokemon_id: int
-    change_log_id: int
+    move_id: int | None
+    pokemon_change_log_id: int | None
+    move_change_log_id: int | None
     message: str
     created_at: datetime

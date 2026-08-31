@@ -37,3 +37,7 @@ class MoveRead(BaseModel):
 class PokemonDetail(PokemonRead):
     learnable_moves: list[MoveRead]
     type_effectiveness: dict[str, float]
+
+
+class PokemonCatalogVersion(BaseModel):
+    version: str | None

@@ -1,3 +1,5 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import httpx
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
@@ -51,6 +53,35 @@ def fetch_pokemon_detail(identifier: int | str) -> dict:
         raise PokeApiFetchError(f"Failed to fetch pokemon {identifier!r}: {exc}") from exc
 
 
+def fetch_pokemon_details_concurrently(
+    identifiers: list[int], max_workers: int = 15
+) -> dict[int, dict | PokeApiFetchError]:
+    """Fetches many Pokemon details in parallel via a thread pool — httpx's
+    Client is thread-safe and releases the GIL during the actual network
+    wait, so this gets real concurrency without an async rewrite of the
+    client or anything built on top of it. Bounded by max_workers to stay a
+    reasonable citizen of a public API with no documented rate-limit SLA.
+
+    Returns one entry per identifier: either the raw payload, or the
+    PokeApiFetchError that identifier failed with (after its own retries
+    were exhausted) — a caller should skip that one id rather than let it
+    abort the whole batch, same as every sequential fetch_pokemon_detail
+    caller already does."""
+    results: dict[int, dict | PokeApiFetchError] = {}
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_id = {
+            executor.submit(fetch_pokemon_detail, identifier): identifier
+            for identifier in identifiers
+        }
+        for future in as_completed(future_to_id):
+            identifier = future_to_id[future]
+            try:
+                results[identifier] = future.result()
+            except PokeApiFetchError as exc:
+                results[identifier] = exc
+    return results
+
+
 def fetch_national_pokedex() -> list[dict]:
     """Returns pokemon_entries from /pokedex/national:
     [{"entry_number": 1, "pokemon_species": {"name": "bulbasaur", "url": "..."}}, ...]
@@ -77,6 +108,27 @@ def fetch_move_detail(identifier: int | str) -> dict:
         return _get(f"/move/{identifier}")
     except (httpx.TransportError, httpx.HTTPStatusError) as exc:
         raise PokeApiFetchError(f"Failed to fetch move {identifier!r}: {exc}") from exc
+
+
+def fetch_move_details_concurrently(
+    identifiers: list[int], max_workers: int = 15
+) -> dict[int, dict | PokeApiFetchError]:
+    """Move counterpart to fetch_pokemon_details_concurrently — same bounded
+    thread-pool shape, see its docstring for the reasoning."""
+    results: dict[int, dict | PokeApiFetchError] = {}
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_id = {
+            executor.submit(fetch_move_detail, identifier): identifier
+            for identifier in identifiers
+        }
+        for future in as_completed(future_to_id):
+            identifier = future_to_id[future]
+            try:
+                results[identifier] = future.result()
+            except PokeApiFetchError as exc:
+                results[identifier] = exc
+    return results
+
 
 def fetch_type_universe() -> list[dict]:
     """Returns [{"name": ..., "url": ...}, ...] from the PokeAPI type index

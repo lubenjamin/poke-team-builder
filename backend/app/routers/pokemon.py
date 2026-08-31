@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.db import get_db
-from app.models import Move, Pokemon, PokemonMovepool
-from app.schemas.pokemon import MoveRead, PokemonDetail, PokemonRead
+from app.models import Move, Pokemon, PokemonChangeLog, PokemonMovepool
+from app.schemas.pokemon import MoveRead, PokemonCatalogVersion, PokemonDetail, PokemonRead
 from app.services.type_effectiveness import compute_type_effectiveness
 
 router = APIRouter(prefix="/api/pokemon", tags=["pokemon"])
@@ -33,6 +33,21 @@ def list_pokemon(db: Session = Depends(get_db)) -> list[Pokemon]:
         .order_by(Pokemon.id)
     )
     return list(db.scalars(stmt))
+
+
+@router.get("/version", response_model=PokemonCatalogVersion)
+def get_pokemon_catalog_version(db: Session = Depends(get_db)) -> PokemonCatalogVersion:
+    """Cheap freshness check for a client-side catalog cache — the max
+    detected_at across pokemon_change_log only moves when a scan actually
+    found a change (unlike last_fetched_at, which touches on every scan
+    regardless of outcome). A client compares this against whatever it
+    cached alongside its stored copy of the full catalog, and only re-fetches
+    the ~800KB /api/pokemon payload if it doesn't match.
+
+    Registered before /{id_or_name} below — it must be, since that route
+    would otherwise swallow "version" as a literal id_or_name lookup."""
+    version = db.scalar(select(func.max(PokemonChangeLog.detected_at)))
+    return PokemonCatalogVersion(version=version.isoformat() if version else None)
 
 
 @router.get("/{id_or_name}", response_model=PokemonDetail)
