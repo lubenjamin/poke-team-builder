@@ -28,6 +28,17 @@ export const MOVE_NUMERIC_FIELDS: MoveNumericField[] = [
   "effect_chance",
 ];
 
+/** Validates a candidate secret against the backend before it's stored —
+ * see DevToolsPage's secret-entry gate. Rejects (throws ApiError with
+ * status 401) rather than silently unlocking the page for any string. */
+export function verifyInternalSecret(secret: string): Promise<{ status: string }> {
+  return apiFetch<{ status: string }>("/api/internal/verify-secret", {
+    withClientId: false,
+    withInternalSecret: true,
+    internalSecretOverride: secret,
+  });
+}
+
 export function scanPokemon(limit?: number): Promise<ScanResult> {
   const query = limit != null ? `?limit=${limit}` : "";
   return apiFetch<ScanResult>(`/api/internal/scan-pokemon${query}`, {

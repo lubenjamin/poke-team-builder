@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { ApiError } from "../api/client";
 import {
   MOVE_NUMERIC_FIELDS,
@@ -8,6 +8,7 @@ import {
   corruptPokemonStat,
   scanMoves,
   scanPokemon,
+  verifyInternalSecret,
   type MoveNumericField,
   type PokemonNumericField,
 } from "../api/devTools";
@@ -33,34 +34,48 @@ export function DevToolsPage({ catalog, moveCatalog }: DevToolsPageProps) {
   useDocumentTitle("Dev Tools");
   const { secret, setSecret, clearSecret } = useInternalSecret();
   const [secretInput, setSecretInput] = useState("");
+  const [verifyStatus, setVerifyStatus] = useState<"idle" | "verifying" | "error">("idle");
 
   if (!secret) {
+    async function handleSubmit(e: FormEvent) {
+      e.preventDefault();
+      const trimmed = secretInput.trim();
+      if (!trimmed) return;
+      setVerifyStatus("verifying");
+      try {
+        await verifyInternalSecret(trimmed);
+        setSecret(trimmed); // only store + unlock the page once the backend confirms it's correct
+      } catch {
+        setVerifyStatus("error");
+      }
+    }
+
     return (
       <main>
         <PageHero
           title="Dev Tools"
           description="Trigger scans and simulate data drift for demoing the change-detection pipeline."
         />
-        <form
-          className="dev-tools__secret-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (secretInput.trim()) setSecret(secretInput.trim());
-          }}
-        >
+        <form className="dev-tools__secret-form" onSubmit={handleSubmit}>
           <label className="dev-tools__secret-label">
             Internal secret required
             <input
               type="password"
               value={secretInput}
-              onChange={(e) => setSecretInput(e.target.value)}
+              onChange={(e) => {
+                setSecretInput(e.target.value);
+                setVerifyStatus("idle");
+              }}
               placeholder="Paste the internal API secret"
               autoFocus
             />
           </label>
-          <button type="submit" disabled={!secretInput.trim()}>
-            Save
+          <button type="submit" disabled={!secretInput.trim() || verifyStatus === "verifying"}>
+            {verifyStatus === "verifying" ? "Checking..." : "Save"}
           </button>
+          {verifyStatus === "error" && (
+            <p className="dev-tools__error">Incorrect secret.</p>
+          )}
         </form>
       </main>
     );

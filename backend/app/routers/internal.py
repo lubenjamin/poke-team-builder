@@ -22,6 +22,16 @@ router = APIRouter(
 # action, same gate: prompt for the secret once, store it client-side).
 
 
+@router.get("/verify-secret")
+def verify_secret() -> dict[str, str]:
+    """No-op beyond the router-level require_internal_secret dependency
+    above — returns 200 if the header matched, 401 otherwise. Lets
+    /dev-tools validate a candidate secret before storing it and unlocking
+    the rest of the page, instead of accepting anything client-side and
+    only failing later when an actual action is attempted."""
+    return {"status": "ok"}
+
+
 @router.post("/scan-pokemon", response_model=ScanResultRead)
 def scan_pokemon(
     limit: int | None = None,

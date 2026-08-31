@@ -21,16 +21,27 @@ interface RequestOptions {
    * — for the /dev-tools page's calls to the secret-gated /api/internal/*
    * routes. */
   withInternalSecret?: boolean;
+  /** Send this exact value instead of reading from sessionStorage — for
+   * validating a candidate secret before it's been stored/confirmed (see
+   * DevToolsPage's secret-entry gate). Only used when withInternalSecret
+   * is also true. */
+  internalSecretOverride?: string;
 }
 
 export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, withClientId = true, withInternalSecret = false } = options;
+  const {
+    method = "GET",
+    body,
+    withClientId = true,
+    withInternalSecret = false,
+    internalSecretOverride,
+  } = options;
 
   const headers: Record<string, string> = {};
   if (body !== undefined) headers["Content-Type"] = "application/json";
   if (withClientId) headers["X-Client-Id"] = getClientId();
   if (withInternalSecret) {
-    const secret = getInternalSecret();
+    const secret = internalSecretOverride ?? getInternalSecret();
     if (secret) headers["X-Internal-Secret"] = secret;
   }
 
