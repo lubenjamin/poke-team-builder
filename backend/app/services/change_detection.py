@@ -34,6 +34,15 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_WORKERS = 15
 
+# Fetching the *entire* catalog concurrently before writing any of it (the
+# original design) held every raw PokeAPI payload for the whole catalog in
+# memory at once — confirmed live to OOM-kill a 512MB Render instance on a
+# full ~1343-Pokemon scan. Processing in bounded batches (fetch a batch,
+# write it, commit, discard it, move on) keeps peak memory roughly constant
+# regardless of catalog size, while still covering every single entry on
+# every scan run — nothing is skipped or rotated out.
+DEFAULT_SCAN_BATCH_SIZE = 50
+
 # The Pokemon fields that actually surface in the app (Pokedex grid, team
 # builder, detail page) — a change to any of these is worth alerting a user
 # whose team includes that Pokemon about. species_id/is_default/last_fetched_at
@@ -323,19 +332,25 @@ def _handle_movepool_removals(db: Session, pokemon_id: int, removed_move_ids: se
 
 
 def scan_all_pokemon_for_changes(
-    db: Session, limit: int | None = None, max_workers: int = DEFAULT_MAX_WORKERS
+    db: Session,
+    limit: int | None = None,
+    max_workers: int = DEFAULT_MAX_WORKERS,
+    batch_size: int = DEFAULT_SCAN_BATCH_SIZE,
 ) -> ScanResult:
     """Re-scans the cached catalog — the recurring job's entry point (also
     the internal on-demand trigger). Every scan covers the full requested
     set every run (no rotation) since any Pokemon could change and it
-    should be caught as soon as possible — so this fetches concurrently to
-    keep that full-catalog scan fast:
+    should be caught as soon as possible.
 
-    Phase 1 fetches every targeted Pokemon's fresh PokeAPI payload in
-    parallel via a bounded thread pool — pure network I/O, no DB involved.
-    Phase 2 diffs and writes each one sequentially against the single DB
-    session (SQLAlchemy sessions aren't thread-safe), batching commits every
-    50 rows rather than per Pokemon.
+    Processed in bounded batches of `batch_size`, not the whole catalog at
+    once: within each batch, phase 1 fetches every targeted Pokemon's fresh
+    PokeAPI payload concurrently (pure network I/O, no DB involved), then
+    phase 2 diffs and writes each one sequentially against the single DB
+    session (SQLAlchemy sessions aren't thread-safe) and commits once for
+    the batch. Batching bounds peak memory to roughly one batch's worth of
+    raw payloads regardless of catalog size — holding the entire catalog's
+    payloads in memory at once (the original design) was confirmed to
+    OOM-kill a memory-constrained deployment on a full scan.
 
     A transient PokeAPI fetch failure just skips that one Pokemon rather
     than aborting the whole run; `limit` caps how many are re-checked, for a
@@ -347,52 +362,59 @@ def scan_all_pokemon_for_changes(
     started_at = datetime.now(timezone.utc)
     result = ScanResult()
 
-    # Snapshot "before" state up front (both display fields and movepool),
-    # from the cache as it stood before this scan writes anything — phase 1
-    # below is fetch-only, so the cache can't have changed in between.
-    before_snapshots = {
-        pokemon.id: _snapshot(pokemon, _TRACKED_FIELDS)
-        for pokemon in db.scalars(select(Pokemon).where(Pokemon.id.in_(pokemon_ids)))
-    }
-    before_movepool: dict[int, set[int]] = {}
-    for pokemon_id, move_id in db.execute(
-        select(PokemonMovepool.pokemon_id, PokemonMovepool.move_id).where(
-            PokemonMovepool.pokemon_id.in_(pokemon_ids)
-        )
-    ).all():
-        before_movepool.setdefault(pokemon_id, set()).add(move_id)
+    for batch_start in range(0, total, batch_size):
+        batch_ids = pokemon_ids[batch_start : batch_start + batch_size]
 
-    logger.info("pokemon scan: fetching %d pokemon (up to %d concurrent)...", total, max_workers)
-    fetched = fetch_pokemon_details_concurrently(pokemon_ids, max_workers=max_workers)
+        # Snapshot "before" state for just this batch, from the cache as it
+        # stood before this batch writes anything — the fetch below is
+        # fetch-only, so the cache can't have changed in between. Scoping
+        # this per-batch (not the whole catalog up front) is the other half
+        # of the memory fix — before_movepool in particular can be sizeable
+        # (every learnable move id for every Pokemon in the batch).
+        before_snapshots = {
+            pokemon.id: _snapshot(pokemon, _TRACKED_FIELDS)
+            for pokemon in db.scalars(select(Pokemon).where(Pokemon.id.in_(batch_ids)))
+        }
+        before_movepool: dict[int, set[int]] = {}
+        for pokemon_id, move_id in db.execute(
+            select(PokemonMovepool.pokemon_id, PokemonMovepool.move_id).where(
+                PokemonMovepool.pokemon_id.in_(batch_ids)
+            )
+        ).all():
+            before_movepool.setdefault(pokemon_id, set()).add(move_id)
 
-    for i, pokemon_id in enumerate(pokemon_ids, start=1):
-        result.scanned += 1
-        raw_or_error = fetched[pokemon_id]
-        if isinstance(raw_or_error, PokeApiFetchError):
-            result.fetch_failed += 1
-            logger.warning(
-                "pokemon scan: skipping pokemon %d after fetch failure: %s",
+        fetched = fetch_pokemon_details_concurrently(batch_ids, max_workers=max_workers)
+
+        for pokemon_id in batch_ids:
+            result.scanned += 1
+            raw_or_error = fetched[pokemon_id]
+            if isinstance(raw_or_error, PokeApiFetchError):
+                result.fetch_failed += 1
+                logger.warning(
+                    "pokemon scan: skipping pokemon %d after fetch failure: %s",
+                    pokemon_id,
+                    raw_or_error,
+                )
+                continue
+
+            logs = _scan_one_pokemon(
+                db,
                 pokemon_id,
                 raw_or_error,
+                before_snapshots[pokemon_id],
+                before_movepool.get(pokemon_id, set()),
+                source="scan",
             )
-            continue
 
-        logs = _scan_one_pokemon(
-            db,
-            pokemon_id,
-            raw_or_error,
-            before_snapshots[pokemon_id],
-            before_movepool.get(pokemon_id, set()),
-            source="scan",
-        )
+            if logs:
+                result.changed += 1
+                result.changes_logged += len(logs)
 
-        if logs:
-            result.changed += 1
-            result.changes_logged += len(logs)
-
-        if i % 50 == 0 or i == total:
-            db.commit()
-            logger.info("pokemon scan progress: %d/%d", i, total)
+        db.commit()
+        # fetched/before_snapshots/before_movepool are reassigned (or fall
+        # out of scope) on the next iteration, freeing this batch's memory
+        # before the next one is fetched.
+        logger.info("pokemon scan progress: %d/%d", min(batch_start + batch_size, total), total)
 
     result.alerts_created = db.scalar(
         select(func.count(Alert.id)).where(Alert.created_at >= started_at)
@@ -480,12 +502,18 @@ def _generate_move_change_alerts(db: Session, move_id: int, logs: list[MoveChang
 
 
 def scan_all_moves_for_changes(
-    db: Session, limit: int | None = None, max_workers: int = DEFAULT_MAX_WORKERS
+    db: Session,
+    limit: int | None = None,
+    max_workers: int = DEFAULT_MAX_WORKERS,
+    batch_size: int = DEFAULT_SCAN_BATCH_SIZE,
 ) -> ScanResult:
-    """Move counterpart to scan_all_pokemon_for_changes — same two-phase
-    (concurrent fetch, then batched sequential compare-and-write) shape, run
-    as an independent scan/route/job per Pokemon and Move data having
-    different real-world PokeAPI update cadences."""
+    """Move counterpart to scan_all_pokemon_for_changes — same bounded-batch
+    (fetch a batch concurrently, write it, commit, discard it) shape, run as
+    an independent scan/route/job per Pokemon and Move data having
+    different real-world PokeAPI update cadences. See
+    scan_all_pokemon_for_changes's docstring for why batching matters:
+    holding the whole catalog's fetched payloads in memory at once OOM-killed
+    a memory-constrained deployment."""
     move_ids = list(db.scalars(select(Move.id).order_by(Move.id)))
     if limit is not None:
         move_ids = move_ids[:limit]
@@ -493,33 +521,36 @@ def scan_all_moves_for_changes(
     started_at = datetime.now(timezone.utc)
     result = ScanResult()
 
-    before_snapshots = {
-        move.id: _snapshot(move, _TRACKED_MOVE_FIELDS)
-        for move in db.scalars(select(Move).where(Move.id.in_(move_ids)))
-    }
+    for batch_start in range(0, total, batch_size):
+        batch_ids = move_ids[batch_start : batch_start + batch_size]
 
-    logger.info("move scan: fetching %d moves (up to %d concurrent)...", total, max_workers)
-    fetched = fetch_move_details_concurrently(move_ids, max_workers=max_workers)
+        before_snapshots = {
+            move.id: _snapshot(move, _TRACKED_MOVE_FIELDS)
+            for move in db.scalars(select(Move).where(Move.id.in_(batch_ids)))
+        }
 
-    for i, move_id in enumerate(move_ids, start=1):
-        result.scanned += 1
-        raw_or_error = fetched[move_id]
-        if isinstance(raw_or_error, PokeApiFetchError):
-            result.fetch_failed += 1
-            logger.warning(
-                "move scan: skipping move %d after fetch failure: %s", move_id, raw_or_error
+        fetched = fetch_move_details_concurrently(batch_ids, max_workers=max_workers)
+
+        for move_id in batch_ids:
+            result.scanned += 1
+            raw_or_error = fetched[move_id]
+            if isinstance(raw_or_error, PokeApiFetchError):
+                result.fetch_failed += 1
+                logger.warning(
+                    "move scan: skipping move %d after fetch failure: %s", move_id, raw_or_error
+                )
+                continue
+
+            logs = _scan_one_move(
+                db, move_id, raw_or_error, before_snapshots[move_id], source="scan"
             )
-            continue
 
-        logs = _scan_one_move(db, move_id, raw_or_error, before_snapshots[move_id], source="scan")
+            if logs:
+                result.changed += 1
+                result.changes_logged += len(logs)
 
-        if logs:
-            result.changed += 1
-            result.changes_logged += len(logs)
-
-        if i % 50 == 0 or i == total:
-            db.commit()
-            logger.info("move scan progress: %d/%d", i, total)
+        db.commit()
+        logger.info("move scan progress: %d/%d", min(batch_start + batch_size, total), total)
 
     result.alerts_created = db.scalar(
         select(func.count(Alert.id)).where(Alert.created_at >= started_at)
