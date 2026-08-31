@@ -6,8 +6,8 @@ export interface RosterSlotInput {
   move_ids: number[];
 }
 
-export function fetchTeams(): Promise<Team[]> {
-  return apiFetch<Team[]>("/api/teams");
+export function fetchTeams(): Promise<TeamDetail[]> {
+  return apiFetch<TeamDetail[]>("/api/teams");
 }
 
 export function createTeam(name: string, description: string | null = null): Promise<Team> {

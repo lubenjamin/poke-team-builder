@@ -1,43 +1,41 @@
-import type { Team } from "../types/team";
+import type { TeamDetail } from "../types/team";
 import "./TeamList.css";
 
 interface TeamListProps {
-  teams: Team[];
-  selectedId: number | null;
-  isCreatingNew: boolean;
+  teams: TeamDetail[];
   onSelect: (id: number) => void;
   onNewTeam: () => void;
   onDelete: (id: number) => void;
 }
 
-export function TeamList({
-  teams,
-  selectedId,
-  isCreatingNew,
-  onSelect,
-  onNewTeam,
-  onDelete,
-}: TeamListProps) {
+export function TeamList({ teams, onSelect, onNewTeam, onDelete }: TeamListProps) {
   return (
     <div className="team-list">
-      <button
-        type="button"
-        className={`team-list__new-btn${isCreatingNew ? " team-list__new-btn--active" : ""}`}
-        onClick={onNewTeam}
-      >
+      <button type="button" className="team-list__new-btn" onClick={onNewTeam}>
         + New Team
       </button>
 
       <ul className="team-list__items">
         {teams.map((team) => (
-          <li
-            key={team.id}
-            className={`team-list__item${
-              !isCreatingNew && team.id === selectedId ? " team-list__item--active" : ""
-            }`}
-          >
-            <button type="button" className="team-list__name" onClick={() => onSelect(team.id)}>
-              {team.name}
+          <li key={team.id} className="team-list__item">
+            <button
+              type="button"
+              className="team-list__row"
+              onClick={() => onSelect(team.id)}
+            >
+              <span className="team-list__name">{team.name}</span>
+              <div className="team-list__roster-preview">
+                {team.roster.map((slot) => (
+                  <img
+                    key={slot.pokemon.id}
+                    src={slot.pokemon.sprite_url}
+                    alt={slot.pokemon.name}
+                  />
+                ))}
+                {team.roster.length === 0 && (
+                  <span className="team-list__roster-preview-empty">Empty</span>
+                )}
+              </div>
             </button>
             <button
               type="button"
@@ -51,7 +49,7 @@ export function TeamList({
             </button>
           </li>
         ))}
-        {teams.length === 0 && !isCreatingNew && <li className="team-list__empty">No teams yet.</li>}
+        {teams.length === 0 && <li className="team-list__empty">No teams yet.</li>}
       </ul>
     </div>
   );

@@ -9,6 +9,8 @@ import { HomePage } from "./pages/HomePage";
 import { MoveDetailPage } from "./pages/MoveDetailPage";
 import { MovesPage } from "./pages/MovesPage";
 import { PokemonDetailPage } from "./pages/PokemonDetailPage";
+import { TeamDetailPage } from "./pages/TeamDetailPage";
+import { TeamEditPage } from "./pages/TeamEditPage";
 import { TeamOptimizerPage } from "./pages/TeamOptimizerPage";
 import { TeamsPage } from "./pages/TeamsPage";
 
@@ -66,9 +68,15 @@ function App() {
         <Route path="/moves" element={<MovesPage catalog={moveCatalog} />} />
         <Route path="/moves/:idOrName" element={<MoveDetailPage />} />
         <Route path="/pokemon/:idOrName" element={<PokemonDetailPage />} />
+        <Route path="/teams" element={<TeamsPage />} />
         <Route
-          path="/teams"
-          element={<TeamsPage catalog={catalog} moveCatalog={moveCatalog} />}
+          path="/teams/new"
+          element={<TeamEditPage catalog={catalog} moveCatalog={moveCatalog} />}
+        />
+        <Route path="/teams/:teamId" element={<TeamDetailPage />} />
+        <Route
+          path="/teams/:teamId/edit"
+          element={<TeamEditPage catalog={catalog} moveCatalog={moveCatalog} />}
         />
         <Route
           path="/optimizer"
