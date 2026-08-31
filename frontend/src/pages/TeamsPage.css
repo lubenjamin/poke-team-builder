@@ -1,7 +1,4 @@
 .teams-page__layout {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
   padding: 0 1rem 1.5rem;
 }
 

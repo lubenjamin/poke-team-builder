@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import alerts, changes, counter_team, internal, moves, pokemon, teams
+from app.routers import alerts, changes, counter_team, internal, moves, pokemon, teams, types
 
 app = FastAPI(title="Poketactics API")
 
@@ -16,6 +16,7 @@ app.add_middleware(
 app.include_router(pokemon.router)
 app.include_router(moves.router)
 app.include_router(teams.router)
+app.include_router(types.router)
 app.include_router(counter_team.router)
 app.include_router(alerts.router)
 app.include_router(changes.router)

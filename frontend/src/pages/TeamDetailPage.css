@@ -1,0 +1,497 @@
+.team-detail {
+  padding: 1.5rem 1rem 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+
+  /* Categorical series colors (up to 6 roster slots) — validated ordering
+     for adjacent-pair CVD safety on bars, from the dataviz skill's
+     reference palette. Fixed to slot index, not sort rank, so a member's
+     bar keeps its color across TeamSpeedTiers' tab-driven re-sorts. */
+  --team-series-1: #2a78d6;
+  --team-series-2: #eb6834;
+  --team-series-3: #1baf7a;
+  --team-series-4: #eda100;
+  --team-series-5: #e87ba4;
+  --team-series-6: #008300;
+
+  /* Diverging pair (defense matrix): blue = resist, red = weak, gray =
+     neutral (1x). "Strong" = the validated ramp endpoints; "mild" = a
+     lighter/muted tint of the same pole for the 0.5x/2x middle steps. */
+  --team-resist-strong: #2a78d6;
+  --team-resist-mild: #a9c9ef;
+  --team-weak-mild: #f0aeae;
+  --team-weak-strong: #e34948;
+}
+
+@media (prefers-color-scheme: dark) {
+  .team-detail {
+    --team-series-1: #3987e5;
+    --team-series-2: #d95926;
+    --team-series-3: #199e70;
+    --team-series-4: #c98500;
+    --team-series-5: #d55181;
+    --team-series-6: #008300;
+
+    --team-resist-strong: #3987e5;
+    --team-resist-mild: #1c3a5c;
+    --team-weak-mild: #5c2a2a;
+    --team-weak-strong: #e66767;
+  }
+}
+
+.team-detail__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.team-detail__name {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.team-detail__description {
+  margin: 0.3rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.team-detail__edit-btn {
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.team-detail__message {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.team-detail__section-title {
+  font-size: 1.1rem;
+  margin: 2rem 0 0.9rem;
+}
+
+/* --- roster strip --- */
+
+.team-roster-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.6rem;
+}
+
+.team-roster-strip__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  cursor: pointer;
+  font: inherit;
+  color: var(--text-h);
+}
+
+.team-roster-strip__tile--active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.team-roster-strip__tile img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.team-roster-strip__tile span {
+  font-size: 0.72rem;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+/* --- slot detail card --- */
+
+.slot-detail-card {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--card-bg);
+}
+
+.slot-detail-card__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.slot-detail-card__header img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.slot-detail-card__name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.slot-detail-card__name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--text-h);
+  text-decoration: none;
+}
+
+.slot-detail-card__name:hover {
+  color: var(--accent);
+}
+
+.slot-detail-card__slot-badge {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.slot-detail-card__types {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.slot-detail-card__type-badge {
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.slot-detail-card__section-title {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 1rem 0 0.6rem;
+}
+
+.slot-detail-card__moves {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.slot-detail-card__move {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--text-h);
+}
+
+.slot-detail-card__move:hover {
+  border-color: var(--accent);
+}
+
+.slot-detail-card__move--empty {
+  border-style: dashed;
+  opacity: 0.4;
+  min-height: 2.2rem;
+}
+
+.slot-detail-card__move-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.slot-detail-card__move-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.slot-detail-card__move-type {
+  padding: 0.06rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+/* --- stat bars (shared with PokemonDetailPage's pattern) --- */
+
+.stat-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-bar {
+  display: grid;
+  grid-template-columns: 90px 1fr 2.5rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stat-bar__label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.stat-bar__track {
+  height: 10px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.stat-bar__fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 0 4px 4px 0;
+}
+
+.stat-bar__value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text-h);
+}
+
+/* --- defense matrix --- */
+
+.team-defense-matrix__scroll {
+  overflow-x: auto;
+}
+
+.team-defense-matrix table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.team-defense-matrix th,
+.team-defense-matrix td {
+  padding: 0.4rem 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.team-defense-matrix__type-col {
+  text-align: left;
+}
+
+.team-defense-matrix__member-col img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.team-defense-matrix__type-badge {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.team-defense-matrix__cell--resist-strong {
+  background: var(--team-resist-strong);
+  color: white;
+}
+
+.team-defense-matrix__cell--resist-mild {
+  background: var(--team-resist-mild);
+}
+
+.team-defense-matrix__cell--weak-mild {
+  background: var(--team-weak-mild);
+}
+
+.team-defense-matrix__cell--weak-strong {
+  background: var(--team-weak-strong);
+  color: white;
+}
+
+.team-defense-matrix__summary {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.team-defense-matrix__summary--negative {
+  color: var(--team-weak-strong);
+}
+
+.team-defense-matrix__summary--positive {
+  color: var(--team-resist-strong);
+}
+
+/* --- damage dealt --- */
+
+.team-damage-dealt {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+
+.team-damage-dealt__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+}
+
+.team-damage-dealt__type-badge {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.team-damage-dealt__pips {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.team-damage-dealt__pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.team-damage-dealt__pip--filled {
+  background: var(--accent);
+}
+
+.team-damage-dealt__label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* --- speed tiers --- */
+
+.team-speed-tiers__tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.team-speed-tiers__tab {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.team-speed-tiers__tab--active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.team-speed-tiers__hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.team-speed-tiers__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.team-speed-tiers__row {
+  display: grid;
+  grid-template-columns: 2rem 110px 1fr 3rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.team-speed-tiers__rank {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.team-speed-tiers__name {
+  font-size: 0.82rem;
+  text-transform: capitalize;
+  color: var(--text-h);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-speed-tiers__track {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.team-speed-tiers__fill {
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+}
+
+.team-speed-tiers__value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text-h);
+}
+
+.team-speed-tiers__range {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}

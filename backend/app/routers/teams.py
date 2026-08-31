@@ -18,11 +18,27 @@ def _get_owned_team(team_id: int, client_id: str, db: Session) -> Team:
     return team
 
 
-@router.get("", response_model=list[TeamRead])
+@router.get("", response_model=list[TeamDetail])
 def list_teams(
     client_id: str = Depends(get_client_id), db: Session = Depends(get_db)
 ) -> list[Team]:
-    stmt = select(Team).where(Team.client_id == client_id).order_by(Team.created_at)
+    # Includes each team's roster (not just TeamRead) so the teams list page
+    # can show a sprite-row preview without a second request per team —
+    # cheap at this scale (a handful of teams per client, 6 Pokemon each),
+    # unlike the whole-catalog eager-loads removed elsewhere this session.
+    stmt = (
+        select(Team)
+        .where(Team.client_id == client_id)
+        .options(
+            selectinload(Team.roster).selectinload(TeamPokemon.pokemon).selectinload(
+                Pokemon.species
+            ),
+            selectinload(Team.roster).selectinload(TeamPokemon.move_links).selectinload(
+                TeamPokemonMove.move
+            ),
+        )
+        .order_by(Team.created_at)
+    )
     return list(db.scalars(stmt))
 
 

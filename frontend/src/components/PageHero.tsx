@@ -9,7 +9,7 @@ export function PageHero({ title, description }: PageHeroProps) {
   return (
     <div className="page-hero">
       <h1 className="page-hero__title">{title}</h1>
-      <p className="page-hero__description">{description}</p>
+      {description && <p className="page-hero__description">{description}</p>}
     </div>
   );
 }
