@@ -1,9 +1,19 @@
 # Pokétactics
 
+**Live app: [poketactics.app](https://poketactics.app/)**
+
 An end-to-end Pokémon team builder: browse the full Pokédex, build and manage
 multiple teams, generate a matchup-aware counter team for any roster, and get
 alerted when a Pokémon on one of your teams changes in the underlying data.
 React/Vite frontend, FastAPI backend, Postgres, PokeAPI as the data source.
+
+## Contents
+
+- [Stack](#stack)
+- [Data model](#data-model)
+- [Design decisions worth calling out](#design-decisions-worth-calling-out)
+- [The counter-team generator is a deliberately simplified model](#the-counter-team-generator-is-a-deliberately-simplified-model--not-a-battle-simulator)
+- [Future feature plans](#future-feature-plans)
 
 ## Stack
 
@@ -163,3 +173,20 @@ informative rather than incidental:
   only each one against the opponent. Capturing real synergy would mean
   scoring combinations, not individuals — a fundamentally different, far
   more expensive problem than the one this greedy pipeline solves.
+
+## Future feature plans
+
+- **Items, abilities, natures, and bonus stats.** In Pokémon team battling there are many more variables beyond base stats and moves. These include items, abilities, natures, and allocating bonus stats to any base stat. Dimensions like items and abilities are public knowledge when facing an opponent, while nature and bonus stats are not. Each of these dimensions would be incorporated into the data model in the future for more accurate reflection of real Pokémon battling. 
+- **Format-specific team building.** Currently when building a team, the entire roster of Pokémon is available to build off of. However, in competitive Pokémon battling, there's always a format at play that only allows a specific roster of Pokémon to build off of. In the future users will be able to build teams and generate counter-teams for a specific format (past or present) of their choice. 
+- **A competitive tournament team aggregator.** The homepage's World
+  Championships showcase is a one-time snapshot. IN the future this will bhe generalized into an
+  ongoing aggregator, pulling in top-performing teams across multiple
+  tournaments and formats.
+- **Team code export/import, interoperable with Pokémon Champions.** Fundamentally this app is an aid for someone who's competing in the Pokémon champions game. In the future, users will be able to access a
+  shareable paste-code for a team, compatible with the official game's own
+  format, so a team built here could move to and from Pokémon Champions
+  directly and vice versa.
+- **Team-vs-team head-to-head analytics.** Beyond generating a counter team,
+  a deeper matchup breakdown between two specific saved teams, including per-Pokémon
+  matchup tables, speed comparisons, and win-condition analysis for an
+  actual pairing.
