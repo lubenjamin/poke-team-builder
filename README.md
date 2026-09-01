@@ -11,10 +11,87 @@ React/Vite frontend, FastAPI backend, Postgres, PokeAPI as the data source.
 |---|---|---|
 | Frontend | React + Vite | Static build, fast dev loop, no server-rendering complexity this app doesn't need. |
 | Backend | Python + FastAPI | Typed request/response models via Pydantic, and a natural home for both the HTTP API and the scheduled ingestion job in one codebase. |
-| Database | Postgres (Neon) | Neon's free tier is permanent and needs no card, unlike alternatives that expire after 30 days — a real risk to plan around ahead of a deadline. Trade-off: idle compute suspends, so the first query after idle eats a resume penalty; acceptable here since this isn't a latency-critical app. |
-| Identity | Anonymous client ID (`X-Client-Id`, generated client-side, sent on every request) | The requirement is "persist across sessions," not cross-device login. Full auth (hashing, JWT, login UI) would cost hours for something the spec doesn't ask for — this is a scoped trade-off, not an oversight. |
+| Database | Postgres (Neon) | Neon's free tier is permanent and needs no card, unlike alternatives that expire after 30 days. Trade-off: idle compute suspends, so the first query after idle eats a resume penalty. |
+| Identity | Anonymous client ID (`X-Client-Id`, generated client-side, sent on every request) | A simple way to persist across sessions without building real auth. In a real-world product this would be a full username/password (or SSO) system with actual accounts. |
 | Ingestion | One shared `fetch → transform → validate → write` pipeline, used by both the one-time batch load and the recurring scan | Guarantees the two entry points can never validate data differently, and keeps "reject a bad record, log it, keep going" logic in exactly one place. |
 | Scheduling | GitHub Actions cron → internal API endpoint | Free, and the run logs double as demo evidence that the freshness feature actually executes on a schedule, not just in code. |
+
+## Data model
+
+The core relationships between Pokémon data — species, forms, moves, and how
+teams reference them.
+
+```mermaid
+erDiagram
+    POKEMON_SPECIES ||--o{ POKEMON : "has forms"
+    POKEMON ||--o{ POKEMON_MOVEPOOL : "can learn"
+    MOVE ||--o{ POKEMON_MOVEPOOL : "learnable by"
+    TEAMS ||--o{ TEAM_POKEMON : "roster"
+    POKEMON ||--o{ TEAM_POKEMON : "used as"
+    TEAM_POKEMON ||--o{ TEAM_POKEMON_MOVE : "equipped moves"
+    MOVE ||--o{ TEAM_POKEMON_MOVE : "selected as"
+
+    POKEMON_SPECIES {
+        int id PK
+        string name
+        int national_dex_number
+    }
+    POKEMON {
+        int id PK
+        string name
+        int species_id FK
+        bool is_default
+        bool is_battle_only
+        string types
+        int hp
+        int attack
+        int defense
+        int special_attack
+        int special_defense
+        int speed
+    }
+    MOVE {
+        int id PK
+        string name
+        string type
+        string damage_class
+        int power
+        int priority
+    }
+    POKEMON_MOVEPOOL {
+        int id PK
+        int pokemon_id FK
+        int move_id FK
+    }
+    TEAMS {
+        int id PK
+        string client_id
+        string name
+    }
+    TEAM_POKEMON {
+        int id PK
+        int team_id FK
+        int pokemon_id FK
+        int slot
+    }
+    TEAM_POKEMON_MOVE {
+        int id PK
+        int team_pokemon_id FK
+        int move_id FK
+        int slot
+    }
+```
+
+`pokemon_species` is one row per national-dex entry; `pokemon` is one row per
+*form*, linked back to its species.
+`pokemon_movepool` is the many-to-many of which moves a given form can learn,
+scoped to `pokemon` rather than `pokemon_species` since two forms of the same
+species can legally learn different moves. A saved team's roster
+(`team_pokemon`) references a specific form and preserves order via `slot`;
+each roster slot's equipped moves are their own join table
+(`team_pokemon_move`) rather than a plain array, so a saved moveset is
+validated against that Pokémon's actual movepool and capped at four, same as
+every other many-to-many relationship in this schema.
 
 ## Design decisions worth calling out
 
@@ -24,8 +101,7 @@ national-dex species — the rest are alternate forms (Rotom's five appliance
 forms, regional variants, Mega/Primal forms) that share a dex number with
 their base species. The schema reflects this directly: `pokemon_species` is
 one row per dex entry, `pokemon` is one row per *form*, and every "pokedex
-number" shown anywhere in the app is resolved through that relationship —
-never assumed to equal a form's own ID.
+number" shown anywhere in the app is resolved through that relationship.
 
 **Pokémon and move data get different scan functions because they have
 different real-world change cadences.** In the actual games, movesets and
@@ -37,21 +113,19 @@ even though they share the same underlying pipeline.
 **`is_battle_only` and species identity are treated as immutable, fetched
 once at batch-load time, not on every recurring scan.** Whether a form is
 battle-only (a Mega Evolution, a Primal Reversion) is a structural fact about
-that form, not something that gets balance-patched — unlike a base stat or a
-movepool entry, which can. Re-fetching it on every scan would double the
+that form, not something that gets balance-patched. Re-fetching it on every scan would double the
 per-item request cost of every future scan, forever, to protect against a
 change that structurally can't happen. This is a deliberate cost/coverage
 trade-off, not an oversight.
 
 **Alerts are filtered by current team membership at read time, not fixed at
 write time.** If a user removes the affected Pokémon from a team, the alert
-stops showing — but the change-log entry itself stays, visible in the public
-change log. Re-add the Pokémon within the 7-day window and the alert reappears
-automatically, with no extra bookkeeping.
+stops showing but the change-log entry itself stays, visible in the public
+change log. Re-add the Pokémon and the alert reappears
+automatically.
 
 **Ingestion fails closed.** A malformed record is rejected, logged with its
-raw payload, and skipped — the last-known-good cached value is left
-untouched, and one bad record never aborts the rest of a batch or scan.
+raw payload, and skipped.
 
 ## The counter-team generator is a deliberately simplified model — not a battle simulator
 
@@ -78,3 +152,14 @@ informative rather than incidental:
   is entirely relational — they're worth having *because of how they enable
   a specific teammate*, not because of anything measurable about them in
   isolation.
+- **This generator can't represent that kind of value, structurally, not
+  just by omission.** Stage A scores every candidate independently against
+  the fixed opponent roster, with no visibility into who else ends up on the
+  team. Stage B's only concession to team-level thinking is a same-typing
+  penalty — a crude, single-attribute proxy for "don't be redundant," not a
+  model of synergy. A support Pokémon whose entire value is "sets up a
+  favorable turn for teammate X" scores as if it were just a weak attacker,
+  because nothing in the pipeline evaluates a *pair* of teammates together,
+  only each one against the opponent. Capturing real synergy would mean
+  scoring combinations, not individuals — a fundamentally different, far
+  more expensive problem than the one this greedy pipeline solves.
