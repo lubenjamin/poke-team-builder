@@ -18,6 +18,29 @@ def _get_owned_team(team_id: int, client_id: str, db: Session) -> Team:
     return team
 
 
+def fetch_owned_team_with_roster(team_id: int, client_id: str, db: Session) -> Team:
+    """Same ownership check as _get_owned_team, but eager-loads the full
+    roster (each slot's Pokemon + equipped moves) in one query — what
+    get_team below needs, and what the counter-team-from-saved-team route
+    needs to build a BattleRosterSlot list."""
+    stmt = (
+        select(Team)
+        .where(Team.id == team_id)
+        .options(
+            selectinload(Team.roster).selectinload(TeamPokemon.pokemon).selectinload(
+                Pokemon.species
+            ),
+            selectinload(Team.roster).selectinload(TeamPokemon.move_links).selectinload(
+                TeamPokemonMove.move
+            ),
+        )
+    )
+    team = db.scalars(stmt).first()
+    if team is None or team.client_id != client_id:
+        raise HTTPException(status_code=404, detail="Team not found")
+    return team
+
+
 @router.get("", response_model=list[TeamDetail])
 def list_teams(
     client_id: str = Depends(get_client_id), db: Session = Depends(get_db)
@@ -57,22 +80,7 @@ def create_team(
 def get_team(
     team_id: int, client_id: str = Depends(get_client_id), db: Session = Depends(get_db)
 ) -> Team:
-    stmt = (
-        select(Team)
-        .where(Team.id == team_id)
-        .options(
-            selectinload(Team.roster).selectinload(TeamPokemon.pokemon).selectinload(
-                Pokemon.species
-            ),
-            selectinload(Team.roster).selectinload(TeamPokemon.move_links).selectinload(
-                TeamPokemonMove.move
-            ),
-        )
-    )
-    team = db.scalars(stmt).first()
-    if team is None or team.client_id != client_id:
-        raise HTTPException(status_code=404, detail="Team not found")
-    return team
+    return fetch_owned_team_with_roster(team_id, client_id, db)
 
 
 @router.patch("/{team_id}", response_model=TeamRead)

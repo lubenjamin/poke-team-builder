@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { generateCounterTeamForTeam, saveCounterTeamForTeam } from "../api/counterTeam";
 import { fetchTeam } from "../api/teams";
+import { ApiError } from "../api/client";
+import { CounterTeamPanel } from "../components/CounterTeamPanel";
 import { SlotDetailCard } from "../components/SlotDetailCard";
 import { TeamDamageDealt } from "../components/TeamDamageDealt";
 import { TeamDefenseMatrix } from "../components/TeamDefenseMatrix";
@@ -8,7 +11,7 @@ import { TeamRosterStrip } from "../components/TeamRosterStrip";
 import { TeamSpeedTiers } from "../components/TeamSpeedTiers";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useTypeEffectiveness } from "../hooks/useTypeEffectiveness";
-import type { TeamDetail } from "../types/team";
+import type { TeamDetail, TeamPokemonSlot } from "../types/team";
 import "./TeamDetailPage.css";
 
 export function TeamDetailPage() {
@@ -18,6 +21,11 @@ export function TeamDetailPage() {
   const [status, setStatus] = useState<"loading" | "error" | "ready">("loading");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const typeEffectiveness = useTypeEffectiveness();
+
+  const [counterTeam, setCounterTeam] = useState<TeamPokemonSlot[] | null>(null);
+  const [generatingCounter, setGeneratingCounter] = useState(false);
+  const [savingCounter, setSavingCounter] = useState(false);
+  const [counterError, setCounterError] = useState<string | null>(null);
 
   useDocumentTitle(team ? team.name : "Team");
 
@@ -30,6 +38,8 @@ export function TeamDetailPage() {
         if (cancelled) return;
         setTeam(data);
         setSelectedIndex(0);
+        setCounterTeam(null);
+        setCounterError(null);
         setStatus("ready");
       })
       .catch(() => {
@@ -39,6 +49,33 @@ export function TeamDetailPage() {
       cancelled = true;
     };
   }, [teamId]);
+
+  async function handleGenerateCounter() {
+    if (!team) return;
+    setGeneratingCounter(true);
+    setCounterError(null);
+    try {
+      const roster = await generateCounterTeamForTeam(team.id);
+      setCounterTeam(roster);
+    } catch (err) {
+      setCounterError(err instanceof ApiError ? err.message : "Failed to generate a counter team");
+    } finally {
+      setGeneratingCounter(false);
+    }
+  }
+
+  async function handleSaveCounter() {
+    if (!team) return;
+    setSavingCounter(true);
+    setCounterError(null);
+    try {
+      const newTeam = await saveCounterTeamForTeam(team.id);
+      navigate(`/teams/${newTeam.id}`);
+    } catch (err) {
+      setCounterError(err instanceof ApiError ? err.message : "Failed to save the counter team");
+      setSavingCounter(false);
+    }
+  }
 
   if (status === "loading") return <p className="team-detail__message">Loading team...</p>;
   if (status === "error" || !team) {
@@ -72,14 +109,35 @@ export function TeamDetailPage() {
           <h1 className="team-detail__name">{team.name}</h1>
           {team.description && <p className="team-detail__description">{team.description}</p>}
         </div>
-        <button
-          type="button"
-          className="team-detail__edit-btn"
-          onClick={() => navigate(`/teams/${team.id}/edit`)}
-        >
-          Edit Team
-        </button>
+        <div className="team-detail__header-actions">
+          <button
+            type="button"
+            className="team-detail__counter-btn"
+            onClick={handleGenerateCounter}
+            disabled={generatingCounter}
+          >
+            {generatingCounter ? "Generating..." : "Generate Counter Team"}
+          </button>
+          <button
+            type="button"
+            className="team-detail__edit-btn"
+            onClick={() => navigate(`/teams/${team.id}/edit`)}
+          >
+            Edit Team
+          </button>
+        </div>
       </div>
+
+      {counterError && <p className="team-detail__counter-error">{counterError}</p>}
+
+      {counterTeam && (
+        <CounterTeamPanel
+          roster={counterTeam}
+          onSave={handleSaveCounter}
+          onDismiss={() => setCounterTeam(null)}
+          saving={savingCounter}
+        />
+      )}
 
       <TeamRosterStrip
         roster={team.roster}

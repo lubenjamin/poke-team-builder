@@ -5,9 +5,10 @@ import { useMoveCatalog } from "./hooks/useMoveCatalog";
 import { usePokemonCatalog } from "./hooks/usePokemonCatalog";
 import { ChangeLogPage } from "./pages/ChangeLogPage";
 import { DevToolsPage } from "./pages/DevToolsPage";
-import { HomePage } from "./pages/HomePage";
+import { LandingPage } from "./pages/LandingPage";
 import { MoveDetailPage } from "./pages/MoveDetailPage";
 import { MovesPage } from "./pages/MovesPage";
+import { PokedexPage } from "./pages/PokedexPage";
 import { PokemonDetailPage } from "./pages/PokemonDetailPage";
 import { TeamDetailPage } from "./pages/TeamDetailPage";
 import { TeamEditPage } from "./pages/TeamEditPage";
@@ -23,6 +24,13 @@ function App() {
       <nav className="app-nav">
         <span className="app-nav__brand">Pokétactics</span>
         <div className="app-nav__tabs">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
+          >
+            Home
+          </NavLink>
           <NavLink
             to="/pokedex"
             className={({ isActive }) => `app-nav__tab${isActive ? " app-nav__tab--active" : ""}`}
@@ -63,8 +71,8 @@ function App() {
       </nav>
       <AlertBanner catalog={catalog} moveCatalog={moveCatalog} />
       <Routes>
-        <Route path="/" element={<Navigate to="/pokedex" replace />} />
-        <Route path="/pokedex" element={<HomePage catalog={catalog} />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/pokedex" element={<PokedexPage catalog={catalog} />} />
         <Route path="/moves" element={<MovesPage catalog={moveCatalog} />} />
         <Route path="/moves/:idOrName" element={<MoveDetailPage />} />
         <Route path="/pokemon/:idOrName" element={<PokemonDetailPage />} />
@@ -90,7 +98,7 @@ function App() {
           path="/dev-tools"
           element={<DevToolsPage catalog={catalog} moveCatalog={moveCatalog} />}
         />
-        <Route path="*" element={<Navigate to="/pokedex" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );

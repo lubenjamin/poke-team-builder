@@ -1,3 +1,4 @@
+import { PokemonHoverMoves } from "./PokemonHoverMoves";
 import type { TeamDetail } from "../types/team";
 import "./TeamList.css";
 
@@ -26,10 +27,17 @@ export function TeamList({ teams, onSelect, onNewTeam, onDelete }: TeamListProps
               <span className="team-list__name">{team.name}</span>
               <div className="team-list__roster-preview">
                 {team.roster.map((slot) => (
-                  <img
+                  <PokemonHoverMoves
                     key={slot.pokemon.id}
-                    src={slot.pokemon.sprite_url}
-                    alt={slot.pokemon.name}
+                    spriteUrl={slot.pokemon.sprite_url}
+                    name={slot.pokemon.name}
+                    moves={slot.moves.map((m) => ({
+                      key: m.id,
+                      label: m.name.replace(/-/g, " "),
+                      type: m.type,
+                      linkTo: `/moves/${m.name}`,
+                    }))}
+                    className="team-list__roster-preview-mon"
                   />
                 ))}
                 {team.roster.length === 0 && (

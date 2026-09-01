@@ -37,7 +37,15 @@ export function PokemonPicker({ catalog, excludeDexNumbers, onAdd, onClose }: Po
   }, [onClose]);
 
   const alphabetical = useMemo(
-    () => [...catalog.pokemon].sort((a, b) => a.name.localeCompare(b.name)),
+    // Battle-only forms (Mega Evolutions, Primal Reversion, etc.) only exist
+    // transiently during a battle via a base form's held item/mechanic —
+    // they're never a legal team-list entry, same restriction the backend
+    // enforces in validate_roster_slots and the counter-team generator's
+    // candidate pool.
+    () =>
+      catalog.pokemon
+        .filter((p) => !p.is_battle_only)
+        .sort((a, b) => a.name.localeCompare(b.name)),
     [catalog.pokemon],
   );
 

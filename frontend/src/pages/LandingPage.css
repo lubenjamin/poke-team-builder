@@ -1,0 +1,134 @@
+.landing {
+  padding: 1.5rem 1rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.landing__hero {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+}
+
+.landing__hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2.2rem;
+}
+
+.landing__hero p {
+  margin: 0 0 1.25rem;
+  color: var(--text-muted);
+}
+
+.landing__hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.landing__cta {
+  padding: 0.6rem 1.3rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-h);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.landing__cta--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.landing__worlds-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.landing__worlds-header h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.4rem;
+}
+
+.landing__worlds-subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.landing__worlds-subtitle a {
+  color: var(--accent);
+}
+
+.landing__worlds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1rem;
+}
+
+.worlds-card {
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--card-bg);
+  padding: 1rem;
+}
+
+.worlds-card__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.worlds-card__placement {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.worlds-card__player {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--text-h);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.worlds-card__country {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.worlds-card__roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.worlds-mon-link {
+  display: block;
+  border-radius: 0.4rem;
+}
+
+.worlds-mon-sprite img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  transition: border-color 0.12s ease;
+}
+
+.worlds-mon-link:hover .worlds-mon-sprite img {
+  border-color: var(--accent);
+}

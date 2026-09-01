@@ -22,6 +22,7 @@ from app.services.pokeapi_client import (
     fetch_move_universe,
     fetch_national_pokedex,
     fetch_pokemon_detail,
+    fetch_pokemon_form_detail,
     fetch_pokemon_universe,
     fetch_type_detail,
     fetch_type_universe,
@@ -68,10 +69,13 @@ class SyncSummary:
 
 def transform_pokemon(raw: dict) -> dict:
     """Raw PokeAPI /pokemon/{id} payload -> our normalized shape. Stashes the
-    movepool's move ids under `_movepool_move_ids` — a leading-underscore key,
-    which _upsert_or_reject strips before writing the Pokemon row, and which
-    sync_pokemon then reads to populate pokemon_movepool once the Pokemon
-    itself has been written."""
+    movepool's move ids under `_movepool_move_ids`, and the id of this
+    form's /pokemon-form/{id} resource under `_form_id` — both
+    leading-underscore keys, which _upsert_or_reject strips before writing
+    the Pokemon row. sync_pokemon reads `_movepool_move_ids` to populate
+    pokemon_movepool, and (batch-load only, not the recurring scan — see
+    sync_pokemon's docstring) `_form_id` to fetch is_battle_only, once the
+    Pokemon itself has been written."""
     stats_by_name = {s["stat"]["name"]: s.get("base_stat") for s in raw.get("stats", [])}
     types = [t["type"]["name"] for t in sorted(raw.get("types", []), key=lambda t: t["slot"])]
 
@@ -82,6 +86,10 @@ def transform_pokemon(raw: dict) -> dict:
     species_url = (raw.get("species") or {}).get("url")
     species_id = extract_id_from_url(species_url) if species_url else None
 
+    forms = raw.get("forms") or []
+    form_url = forms[0].get("url") if forms else None
+    form_id = extract_id_from_url(form_url) if form_url else None
+
     return {
         "id": raw.get("id"),
         "name": raw.get("name"),
@@ -90,6 +98,7 @@ def transform_pokemon(raw: dict) -> dict:
         "sprite_url": sprite_url,
         "types": types,
         "_movepool_move_ids": _extract_movepool_move_ids(raw),
+        "_form_id": form_id,
         **{field: stats_by_name.get(api_name) for field, api_name in _STAT_NAME_MAP.items()},
     }
 
@@ -105,6 +114,11 @@ def _extract_movepool_move_ids(raw: dict) -> list[int]:
         except ValueError:
             continue
     return move_ids
+
+
+def transform_pokemon_form(raw: dict) -> dict:
+    """Raw PokeAPI /pokemon-form/{id} payload -> our normalized shape."""
+    return {"is_battle_only": bool(raw.get("is_battle_only", False))}
 
 
 def transform_species_entry(species_entry: dict) -> dict:
@@ -294,6 +308,34 @@ def sync_movepool(
     return added, removed
 
 
+def _sync_is_battle_only(db: Session, transformed_pokemon: dict) -> None:
+    """Fetches /pokemon-form/{id} (using the form id transform_pokemon
+    stashed under `_form_id`) and sets is_battle_only on the already-written
+    Pokemon row. Batch-load-only (called from sync_pokemon, not from
+    ingest_pokemon/ingest_pokemon_payload, which also back the recurring
+    scan) — is_battle_only is a structural property of a form that doesn't
+    change, so there's no reason to pay for this extra fetch on every scan;
+    it only needs to run once, when a Pokemon is first (or re-)batch-loaded.
+    A transient fetch failure here just leaves the existing (default False)
+    value in place rather than aborting the batch."""
+    form_id = transformed_pokemon.get("_form_id")
+    if form_id is None:
+        return
+    try:
+        raw = fetch_pokemon_form_detail(form_id)
+    except PokeApiFetchError as exc:
+        logger.warning(
+            "pokemon: failed to fetch form %s for pokemon %d: %s",
+            form_id,
+            transformed_pokemon["id"],
+            exc,
+        )
+        return
+    existing = db.get(Pokemon, transformed_pokemon["id"])
+    if existing is not None:
+        existing.is_battle_only = transform_pokemon_form(raw)["is_battle_only"]
+
+
 # ---------------------------------------------------------------------------
 # public entry points — each one is a plain, readable loop
 # ---------------------------------------------------------------------------
@@ -441,6 +483,7 @@ def sync_pokemon(
         if result.status == "written":
             summary.written += 1
             sync_movepool(db, transformed)
+            _sync_is_battle_only(db, transformed)
         else:
             summary.rejected += 1
             logger.warning("pokemon: rejected %s: %s", result.entity_id, result.reason)

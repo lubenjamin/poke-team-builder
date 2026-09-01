@@ -8,6 +8,7 @@ class PokemonRead(BaseModel):
     name: str
     pokedex_number: int
     is_default: bool
+    is_battle_only: bool
     sprite_url: str
     types: list[str]
     hp: int

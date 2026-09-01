@@ -5,6 +5,7 @@ export interface Pokemon {
   name: string;
   pokedex_number: number;
   is_default: boolean;
+  is_battle_only: boolean;
   sprite_url: string;
   types: string[];
   hp: number;

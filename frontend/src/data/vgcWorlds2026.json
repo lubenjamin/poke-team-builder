@@ -1,0 +1,1930 @@
+[
+  {
+    "rank": 1,
+    "placement": "1st Place",
+    "player_name": "Takuma Yamazaki",
+    "country": "JP",
+    "pokemon": [
+      {
+        "slug": "floette-eternal",
+        "display_name": "Eternal Flower Floette",
+        "item": "Floettite",
+        "ability": "Flower Veil",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Moonblast",
+            "resolved_id": 585,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Dazzling Gleam",
+            "resolved_id": 605,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Light of Ruin",
+            "resolved_id": 617,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 10061,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10061.png",
+        "types": [
+          "fairy"
+        ]
+      },
+      {
+        "slug": "basculegion",
+        "display_name": "Basculegion",
+        "item": "Life Orb",
+        "ability": "Adaptability",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Wave Crash",
+            "resolved_id": 834,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Last Respects",
+            "resolved_id": 854,
+            "type": "ghost",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Aqua Jet",
+            "resolved_id": 453,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 902,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/902.png",
+        "types": [
+          "water",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "kingambit",
+        "display_name": "Kingambit",
+        "item": "Chople Berry",
+        "ability": "Defiant",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Sucker Punch",
+            "resolved_id": 389,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Kowtow Cleave",
+            "resolved_id": 869,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Low Kick",
+            "resolved_id": 67,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Iron Head",
+            "resolved_id": 442,
+            "type": "steel",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 983,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/983.png",
+        "types": [
+          "dark",
+          "steel"
+        ]
+      },
+      {
+        "slug": "dragonite",
+        "display_name": "Dragonite",
+        "item": "Dragoninite",
+        "ability": "Multiscale",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Dragon Pulse",
+            "resolved_id": 406,
+            "type": "dragon",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Heat Wave",
+            "resolved_id": 257,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Extreme Speed",
+            "resolved_id": 245,
+            "type": "normal",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 149,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png",
+        "types": [
+          "dragon",
+          "flying"
+        ]
+      },
+      {
+        "slug": "garchomp",
+        "display_name": "Garchomp",
+        "item": "Choice Scarf",
+        "ability": "Rough Skin",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Dragon Claw",
+            "resolved_id": 337,
+            "type": "dragon",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Stomping Tantrum",
+            "resolved_id": 707,
+            "type": "ground",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Earthquake",
+            "resolved_id": 89,
+            "type": "ground",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 445,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/445.png",
+        "types": [
+          "dragon",
+          "ground"
+        ]
+      },
+      {
+        "slug": "sneasler",
+        "display_name": "Sneasler",
+        "item": "Focus Sash",
+        "ability": "Poison Touch",
+        "nature": "Jolly",
+        "moves": [
+          {
+            "display_name": "Close Combat",
+            "resolved_id": 370,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Dire Claw",
+            "resolved_id": 827,
+            "type": "poison",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Fake Out",
+            "resolved_id": 252,
+            "type": "normal",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Feint",
+            "resolved_id": 364,
+            "type": "normal",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 903,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/903.png",
+        "types": [
+          "fighting",
+          "poison"
+        ]
+      }
+    ]
+  },
+  {
+    "rank": 2,
+    "placement": "2nd Place",
+    "player_name": "Hiroshi Onishi",
+    "country": "JP",
+    "pokemon": [
+      {
+        "slug": "kingambit",
+        "display_name": "Kingambit",
+        "item": "Occa Berry",
+        "ability": "Defiant",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Kowtow Cleave",
+            "resolved_id": 869,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Sucker Punch",
+            "resolved_id": 389,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Iron Head",
+            "resolved_id": 442,
+            "type": "steel",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Low Kick",
+            "resolved_id": 67,
+            "type": "fighting",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 983,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/983.png",
+        "types": [
+          "dark",
+          "steel"
+        ]
+      },
+      {
+        "slug": "basculegion",
+        "display_name": "Basculegion",
+        "item": "Life Orb",
+        "ability": "Adaptability",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Wave Crash",
+            "resolved_id": 834,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Last Respects",
+            "resolved_id": 854,
+            "type": "ghost",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Aqua Jet",
+            "resolved_id": 453,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 902,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/902.png",
+        "types": [
+          "water",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "garchomp",
+        "display_name": "Garchomp",
+        "item": "Sitrus Berry",
+        "ability": "Rough Skin",
+        "nature": "Jolly",
+        "moves": [
+          {
+            "display_name": "Dragon Claw",
+            "resolved_id": 337,
+            "type": "dragon",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Earthquake",
+            "resolved_id": 89,
+            "type": "ground",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 445,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/445.png",
+        "types": [
+          "dragon",
+          "ground"
+        ]
+      },
+      {
+        "slug": "charizard",
+        "display_name": "Charizard",
+        "item": "Charizardite Y",
+        "ability": "Blaze",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Heat Wave",
+            "resolved_id": 257,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Weather Ball",
+            "resolved_id": 311,
+            "type": "normal",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Ancient Power",
+            "resolved_id": 246,
+            "type": "rock",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 6,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "types": [
+          "fire",
+          "flying"
+        ]
+      },
+      {
+        "slug": "whimsicott",
+        "display_name": "Whimsicott",
+        "item": "Focus Sash",
+        "ability": "Prankster",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Moonblast",
+            "resolved_id": 585,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Tailwind",
+            "resolved_id": 366,
+            "type": "flying",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Encore",
+            "resolved_id": 227,
+            "type": "normal",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 547,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/547.png",
+        "types": [
+          "grass",
+          "fairy"
+        ]
+      },
+      {
+        "slug": "floette-eternal",
+        "display_name": "Eternal Flower Floette",
+        "item": "Floettite",
+        "ability": "Flower Veil",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Moonblast",
+            "resolved_id": 585,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Dazzling Gleam",
+            "resolved_id": 605,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Light of Ruin",
+            "resolved_id": 617,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 10061,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10061.png",
+        "types": [
+          "fairy"
+        ]
+      }
+    ]
+  },
+  {
+    "rank": 3,
+    "placement": "3rd Place",
+    "player_name": "Zachary Weed",
+    "country": "US",
+    "pokemon": [
+      {
+        "slug": "froslass",
+        "display_name": "Froslass",
+        "item": "Froslassite",
+        "ability": "Cursed Body",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Blizzard",
+            "resolved_id": 59,
+            "type": "ice",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Shadow Ball",
+            "resolved_id": 247,
+            "type": "ghost",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Aurora Veil",
+            "resolved_id": 694,
+            "type": "ice",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 478,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/478.png",
+        "types": [
+          "ice",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "sneasler",
+        "display_name": "Sneasler",
+        "item": "White Herb",
+        "ability": "Unburden",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Close Combat",
+            "resolved_id": 370,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Gunk Shot",
+            "resolved_id": 441,
+            "type": "poison",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Fake Out",
+            "resolved_id": 252,
+            "type": "normal",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 903,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/903.png",
+        "types": [
+          "fighting",
+          "poison"
+        ]
+      },
+      {
+        "slug": "lycanroc-dusk",
+        "display_name": "Lycanroc Dusk",
+        "item": "Focus Sash",
+        "ability": "Tough Claws",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Close Combat",
+            "resolved_id": 370,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Accelerock",
+            "resolved_id": 709,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 10152,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10152.png",
+        "types": [
+          "rock"
+        ]
+      },
+      {
+        "slug": "basculegion",
+        "display_name": "Basculegion",
+        "item": "Life Orb",
+        "ability": "Adaptability",
+        "nature": "Jolly",
+        "moves": [
+          {
+            "display_name": "Wave Crash",
+            "resolved_id": 834,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Last Respects",
+            "resolved_id": 854,
+            "type": "ghost",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Aqua Jet",
+            "resolved_id": 453,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 902,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/902.png",
+        "types": [
+          "water",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "kingambit",
+        "display_name": "Kingambit",
+        "item": "Black Glasses",
+        "ability": "Defiant",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Kowtow Cleave",
+            "resolved_id": 869,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Sucker Punch",
+            "resolved_id": 389,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Swords Dance",
+            "resolved_id": 14,
+            "type": "normal",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 983,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/983.png",
+        "types": [
+          "dark",
+          "steel"
+        ]
+      },
+      {
+        "slug": "scovillain",
+        "display_name": "Scovillain",
+        "item": "Scovillainite",
+        "ability": "Moody",
+        "nature": "Bold",
+        "moves": [
+          {
+            "display_name": "Overheat",
+            "resolved_id": 315,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Giga Drain",
+            "resolved_id": 202,
+            "type": "grass",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Rage Powder",
+            "resolved_id": 476,
+            "type": "bug",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 952,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/952.png",
+        "types": [
+          "grass",
+          "fire"
+        ]
+      }
+    ]
+  },
+  {
+    "rank": 4,
+    "placement": "4th Place",
+    "player_name": "Jo\u00e3o Felipe Leite",
+    "country": "BR",
+    "pokemon": [
+      {
+        "slug": "froslass",
+        "display_name": "Froslass",
+        "item": "Froslassite",
+        "ability": "Cursed Body",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Blizzard",
+            "resolved_id": 59,
+            "type": "ice",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Shadow Ball",
+            "resolved_id": 247,
+            "type": "ghost",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Aurora Veil",
+            "resolved_id": 694,
+            "type": "ice",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 478,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/478.png",
+        "types": [
+          "ice",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "kingambit",
+        "display_name": "Kingambit",
+        "item": "Black Glasses",
+        "ability": "Defiant",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Kowtow Cleave",
+            "resolved_id": 869,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Sucker Punch",
+            "resolved_id": 389,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Swords Dance",
+            "resolved_id": 14,
+            "type": "normal",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 983,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/983.png",
+        "types": [
+          "dark",
+          "steel"
+        ]
+      },
+      {
+        "slug": "sneasler",
+        "display_name": "Sneasler",
+        "item": "White Herb",
+        "ability": "Unburden",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Fake Out",
+            "resolved_id": 252,
+            "type": "normal",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Close Combat",
+            "resolved_id": 370,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Dire Claw",
+            "resolved_id": 827,
+            "type": "poison",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 903,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/903.png",
+        "types": [
+          "fighting",
+          "poison"
+        ]
+      },
+      {
+        "slug": "lycanroc-dusk",
+        "display_name": "Lycanroc Dusk",
+        "item": "Focus Sash",
+        "ability": "Tough Claws",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Accelerock",
+            "resolved_id": 709,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Close Combat",
+            "resolved_id": 370,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 10152,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10152.png",
+        "types": [
+          "rock"
+        ]
+      },
+      {
+        "slug": "basculegion",
+        "display_name": "Basculegion",
+        "item": "Life Orb",
+        "ability": "Adaptability",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Wave Crash",
+            "resolved_id": 834,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Last Respects",
+            "resolved_id": 854,
+            "type": "ghost",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Aqua Jet",
+            "resolved_id": 453,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 902,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/902.png",
+        "types": [
+          "water",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "scovillain",
+        "display_name": "Scovillain",
+        "item": "Scovillainite",
+        "ability": "Moody",
+        "nature": "Bold",
+        "moves": [
+          {
+            "display_name": "Overheat",
+            "resolved_id": 315,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Giga Drain",
+            "resolved_id": 202,
+            "type": "grass",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Rage Powder",
+            "resolved_id": 476,
+            "type": "bug",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 952,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/952.png",
+        "types": [
+          "grass",
+          "fire"
+        ]
+      }
+    ]
+  },
+  {
+    "rank": 5,
+    "placement": "5th Place",
+    "player_name": "Antonio S\u00e1nchez",
+    "country": "ES",
+    "pokemon": [
+      {
+        "slug": "incineroar",
+        "display_name": "Incineroar",
+        "item": "Sitrus Berry",
+        "ability": "Intimidate",
+        "nature": "Impish",
+        "moves": [
+          {
+            "display_name": "Fake Out",
+            "resolved_id": 252,
+            "type": "normal",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Parting Shot",
+            "resolved_id": 575,
+            "type": "dark",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Flare Blitz",
+            "resolved_id": 394,
+            "type": "fire",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 727,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/727.png",
+        "types": [
+          "fire",
+          "dark"
+        ]
+      },
+      {
+        "slug": "toxapex",
+        "display_name": "Toxapex",
+        "item": "Leftovers",
+        "ability": "Regenerator",
+        "nature": "Relaxed",
+        "moves": [
+          {
+            "display_name": "Baneful Bunker",
+            "resolved_id": 661,
+            "type": "poison",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Infestation",
+            "resolved_id": 611,
+            "type": "bug",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Toxic",
+            "resolved_id": 92,
+            "type": "poison",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Wide Guard",
+            "resolved_id": 469,
+            "type": "rock",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 748,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/748.png",
+        "types": [
+          "poison",
+          "water"
+        ]
+      },
+      {
+        "slug": "garchomp",
+        "display_name": "Garchomp",
+        "item": "Choice Scarf",
+        "ability": "Rough Skin",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Stomping Tantrum",
+            "resolved_id": 707,
+            "type": "ground",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Earthquake",
+            "resolved_id": 89,
+            "type": "ground",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Dragon Claw",
+            "resolved_id": 337,
+            "type": "dragon",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 445,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/445.png",
+        "types": [
+          "dragon",
+          "ground"
+        ]
+      },
+      {
+        "slug": "charizard",
+        "display_name": "Charizard",
+        "item": "Charizardite Y",
+        "ability": "Blaze",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Heat Wave",
+            "resolved_id": 257,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Solar Beam",
+            "resolved_id": 76,
+            "type": "grass",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Weather Ball",
+            "resolved_id": 311,
+            "type": "normal",
+            "damage_class": "special"
+          }
+        ],
+        "resolved_id": 6,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "types": [
+          "fire",
+          "flying"
+        ]
+      },
+      {
+        "slug": "venusaur",
+        "display_name": "Venusaur",
+        "item": "Focus Sash",
+        "ability": "Chlorophyll",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Sludge Bomb",
+            "resolved_id": 188,
+            "type": "poison",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Earth Power",
+            "resolved_id": 414,
+            "type": "ground",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Sleep Powder",
+            "resolved_id": 79,
+            "type": "grass",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 3,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png",
+        "types": [
+          "grass",
+          "poison"
+        ]
+      },
+      {
+        "slug": "sylveon",
+        "display_name": "Sylveon",
+        "item": "Fairy Feather",
+        "ability": "Pixilate",
+        "nature": "Quiet",
+        "moves": [
+          {
+            "display_name": "Detect",
+            "resolved_id": 197,
+            "type": "fighting",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Hyper Voice",
+            "resolved_id": 304,
+            "type": "normal",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Quick Attack",
+            "resolved_id": 98,
+            "type": "normal",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Yawn",
+            "resolved_id": 281,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 700,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/700.png",
+        "types": [
+          "fairy"
+        ]
+      }
+    ]
+  },
+  {
+    "rank": 6,
+    "placement": "6th Place",
+    "player_name": "YUYA WAKASUGI",
+    "country": "JP",
+    "pokemon": [
+      {
+        "slug": "whimsicott",
+        "display_name": "Whimsicott",
+        "item": "Focus Sash",
+        "ability": "Prankster",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Moonblast",
+            "resolved_id": 585,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Tailwind",
+            "resolved_id": 366,
+            "type": "flying",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Encore",
+            "resolved_id": 227,
+            "type": "normal",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 547,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/547.png",
+        "types": [
+          "grass",
+          "fairy"
+        ]
+      },
+      {
+        "slug": "basculegion",
+        "display_name": "Basculegion",
+        "item": "Life Orb",
+        "ability": "Adaptability",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Wave Crash",
+            "resolved_id": 834,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Last Respects",
+            "resolved_id": 854,
+            "type": "ghost",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Aqua Jet",
+            "resolved_id": 453,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 902,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/902.png",
+        "types": [
+          "water",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "floette-eternal",
+        "display_name": "Eternal Flower Floette",
+        "item": "Floettite",
+        "ability": "Flower Veil",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Moonblast",
+            "resolved_id": 585,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Dazzling Gleam",
+            "resolved_id": 605,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Light of Ruin",
+            "resolved_id": 617,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 10061,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10061.png",
+        "types": [
+          "fairy"
+        ]
+      },
+      {
+        "slug": "dragonite",
+        "display_name": "Dragonite",
+        "item": "Dragoninite",
+        "ability": "Inner Focus",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Dragon Pulse",
+            "resolved_id": 406,
+            "type": "dragon",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Heat Wave",
+            "resolved_id": 257,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Thunderbolt",
+            "resolved_id": 85,
+            "type": "electric",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 149,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png",
+        "types": [
+          "dragon",
+          "flying"
+        ]
+      },
+      {
+        "slug": "sneasler",
+        "display_name": "Sneasler",
+        "item": "White Herb",
+        "ability": "Unburden",
+        "nature": "Jolly",
+        "moves": [
+          {
+            "display_name": "Dire Claw",
+            "resolved_id": 827,
+            "type": "poison",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Close Combat",
+            "resolved_id": 370,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Fake Out",
+            "resolved_id": 252,
+            "type": "normal",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 903,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/903.png",
+        "types": [
+          "fighting",
+          "poison"
+        ]
+      },
+      {
+        "slug": "kingambit",
+        "display_name": "Kingambit",
+        "item": "Chople Berry",
+        "ability": "Defiant",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Kowtow Cleave",
+            "resolved_id": 869,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Iron Head",
+            "resolved_id": 442,
+            "type": "steel",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Low Kick",
+            "resolved_id": 67,
+            "type": "fighting",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Sucker Punch",
+            "resolved_id": 389,
+            "type": "dark",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 983,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/983.png",
+        "types": [
+          "dark",
+          "steel"
+        ]
+      }
+    ]
+  },
+  {
+    "rank": 7,
+    "placement": "7th Place",
+    "player_name": "Stefano Greppi",
+    "country": "IT",
+    "pokemon": [
+      {
+        "slug": "sylveon",
+        "display_name": "Sylveon",
+        "item": "Fairy Feather",
+        "ability": "Pixilate",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Hyper Voice",
+            "resolved_id": 304,
+            "type": "normal",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Hyper Beam",
+            "resolved_id": 63,
+            "type": "normal",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Quick Attack",
+            "resolved_id": 98,
+            "type": "normal",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 700,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/700.png",
+        "types": [
+          "fairy"
+        ]
+      },
+      {
+        "slug": "aerodactyl",
+        "display_name": "Aerodactyl",
+        "item": "Aerodactylite",
+        "ability": "Unnerve",
+        "nature": "Jolly",
+        "moves": [
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Dual Wingbeat",
+            "resolved_id": 814,
+            "type": "flying",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Tailwind",
+            "resolved_id": 366,
+            "type": "flying",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Ice Fang",
+            "resolved_id": 423,
+            "type": "ice",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 142,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/142.png",
+        "types": [
+          "rock",
+          "flying"
+        ]
+      },
+      {
+        "slug": "farigiraf",
+        "display_name": "Farigiraf",
+        "item": "Sitrus Berry",
+        "ability": "Armor Tail",
+        "nature": "Bold",
+        "moves": [
+          {
+            "display_name": "Psychic",
+            "resolved_id": 94,
+            "type": "psychic",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Thunderbolt",
+            "resolved_id": 85,
+            "type": "electric",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Trick Room",
+            "resolved_id": 433,
+            "type": "psychic",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 981,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/981.png",
+        "types": [
+          "normal",
+          "psychic"
+        ]
+      },
+      {
+        "slug": "garchomp",
+        "display_name": "Garchomp",
+        "item": "Life Orb",
+        "ability": "Rough Skin",
+        "nature": "Jolly",
+        "moves": [
+          {
+            "display_name": "Earthquake",
+            "resolved_id": 89,
+            "type": "ground",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Rock Tomb",
+            "resolved_id": 317,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Dragon Claw",
+            "resolved_id": 337,
+            "type": "dragon",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 445,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/445.png",
+        "types": [
+          "dragon",
+          "ground"
+        ]
+      },
+      {
+        "slug": "kingambit",
+        "display_name": "Kingambit",
+        "item": "Focus Sash",
+        "ability": "Defiant",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Kowtow Cleave",
+            "resolved_id": 869,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Sucker Punch",
+            "resolved_id": 389,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Iron Head",
+            "resolved_id": 442,
+            "type": "steel",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Low Kick",
+            "resolved_id": 67,
+            "type": "fighting",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 983,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/983.png",
+        "types": [
+          "dark",
+          "steel"
+        ]
+      },
+      {
+        "slug": "charizard",
+        "display_name": "Charizard",
+        "item": "Charizardite Y",
+        "ability": "Blaze",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Heat Wave",
+            "resolved_id": 257,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Weather Ball",
+            "resolved_id": 311,
+            "type": "normal",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Solar Beam",
+            "resolved_id": 76,
+            "type": "grass",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 6,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "types": [
+          "fire",
+          "flying"
+        ]
+      }
+    ]
+  },
+  {
+    "rank": 8,
+    "placement": "8th Place",
+    "player_name": "Giovanni Piscitelli",
+    "country": "IT",
+    "pokemon": [
+      {
+        "slug": "garchomp",
+        "display_name": "Garchomp",
+        "item": "Life Orb",
+        "ability": "Rough Skin",
+        "nature": "Jolly",
+        "moves": [
+          {
+            "display_name": "Earthquake",
+            "resolved_id": 89,
+            "type": "ground",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Dragon Claw",
+            "resolved_id": 337,
+            "type": "dragon",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Rock Slide",
+            "resolved_id": 157,
+            "type": "rock",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 445,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/445.png",
+        "types": [
+          "dragon",
+          "ground"
+        ]
+      },
+      {
+        "slug": "kingambit",
+        "display_name": "Kingambit",
+        "item": "Chople Berry",
+        "ability": "Defiant",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Kowtow Cleave",
+            "resolved_id": 869,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Iron Head",
+            "resolved_id": 442,
+            "type": "steel",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Sucker Punch",
+            "resolved_id": 389,
+            "type": "dark",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Low Kick",
+            "resolved_id": 67,
+            "type": "fighting",
+            "damage_class": "physical"
+          }
+        ],
+        "resolved_id": 983,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/983.png",
+        "types": [
+          "dark",
+          "steel"
+        ]
+      },
+      {
+        "slug": "charizard",
+        "display_name": "Charizard",
+        "item": "Charizardite Y",
+        "ability": "Blaze",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Heat Wave",
+            "resolved_id": 257,
+            "type": "fire",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Weather Ball",
+            "resolved_id": 311,
+            "type": "normal",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Ancient Power",
+            "resolved_id": 246,
+            "type": "rock",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 6,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        "types": [
+          "fire",
+          "flying"
+        ]
+      },
+      {
+        "slug": "whimsicott",
+        "display_name": "Whimsicott",
+        "item": "Focus Sash",
+        "ability": "Prankster",
+        "nature": "Timid",
+        "moves": [
+          {
+            "display_name": "Moonblast",
+            "resolved_id": 585,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Encore",
+            "resolved_id": 227,
+            "type": "normal",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Tailwind",
+            "resolved_id": 366,
+            "type": "flying",
+            "damage_class": "status"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 547,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/547.png",
+        "types": [
+          "grass",
+          "fairy"
+        ]
+      },
+      {
+        "slug": "basculegion",
+        "display_name": "Basculegion",
+        "item": "Mystic Water",
+        "ability": "Adaptability",
+        "nature": "Adamant",
+        "moves": [
+          {
+            "display_name": "Wave Crash",
+            "resolved_id": 834,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Last Respects",
+            "resolved_id": 854,
+            "type": "ghost",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Aqua Jet",
+            "resolved_id": 453,
+            "type": "water",
+            "damage_class": "physical"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 902,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/902.png",
+        "types": [
+          "water",
+          "ghost"
+        ]
+      },
+      {
+        "slug": "floette-eternal",
+        "display_name": "Eternal Flower Floette",
+        "item": "Floettite",
+        "ability": "Flower Veil",
+        "nature": "Modest",
+        "moves": [
+          {
+            "display_name": "Moonblast",
+            "resolved_id": 585,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Dazzling Gleam",
+            "resolved_id": 605,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Light of Ruin",
+            "resolved_id": 617,
+            "type": "fairy",
+            "damage_class": "special"
+          },
+          {
+            "display_name": "Protect",
+            "resolved_id": 182,
+            "type": "normal",
+            "damage_class": "status"
+          }
+        ],
+        "resolved_id": 10061,
+        "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10061.png",
+        "types": [
+          "fairy"
+        ]
+      }
+    ]
+  }
+]

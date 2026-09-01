@@ -87,6 +87,10 @@
   gap: 0.35rem;
 }
 
+.team-list__roster-preview-mon {
+  flex-shrink: 0;
+}
+
 .team-list__roster-preview img {
   width: 72px;
   height: 72px;
@@ -95,7 +99,6 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.3rem;
-  flex-shrink: 0;
 }
 
 .team-list__roster-preview-empty {

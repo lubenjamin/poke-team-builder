@@ -53,6 +53,17 @@ def fetch_pokemon_detail(identifier: int | str) -> dict:
         raise PokeApiFetchError(f"Failed to fetch pokemon {identifier!r}: {exc}") from exc
 
 
+def fetch_pokemon_form_detail(identifier: int | str) -> dict:
+    """The /pokemon-form/{id} resource — a separate fetch from
+    /pokemon/{id}. Has is_battle_only (Mega Evolution, primal reversion,
+    etc. — forms only reachable via in-battle transformation, not addable
+    to a team outside of battle), which isn't in the /pokemon payload."""
+    try:
+        return _get(f"/pokemon-form/{identifier}")
+    except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+        raise PokeApiFetchError(f"Failed to fetch pokemon form {identifier!r}: {exc}") from exc
+
+
 def fetch_pokemon_details_concurrently(
     identifiers: list[int], max_workers: int = 15
 ) -> dict[int, dict | PokeApiFetchError]:

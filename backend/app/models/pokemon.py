@@ -23,6 +23,12 @@ class Pokemon(Base):
         ForeignKey("pokemon_species.id"), nullable=False, index=True
     )
     is_default: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=false())
+    # From the /pokemon-form/{id} resource (not /pokemon/{id} itself — a
+    # separate PokeAPI fetch). True for forms only reachable via in-battle
+    # transformation (Mega Evolution, primal reversion, etc.) — these can't
+    # be added to a team outside of battle, so the counter-team generator
+    # filters candidates on this.
+    is_battle_only: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=false())
 
     hp: Mapped[int] = mapped_column(Integer, nullable=False)
     attack: Mapped[int] = mapped_column(Integer, nullable=False)

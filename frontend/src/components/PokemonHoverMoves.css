@@ -1,0 +1,81 @@
+.pokemon-hover-moves {
+  position: relative;
+  display: inline-block;
+}
+
+.pokemon-hover-moves img {
+  display: block;
+}
+
+/* Positioned flush against the sprite (bottom: 100%, no gap) with the
+   visual gap moved to padding-bottom instead — a real gap here would be a
+   dead zone the cursor has to cross to reach the tooltip, which drops
+   :hover on .pokemon-hover-moves the instant the cursor leaves the sprite,
+   closing the tooltip before it can be reached. Padding keeps the same
+   visual spacing while staying part of this element's own hoverable box. */
+.pokemon-hover-moves__tooltip {
+  position: absolute;
+  z-index: 20;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-bottom: 0.4rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.1s ease;
+}
+
+.pokemon-hover-moves:hover .pokemon-hover-moves__tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pokemon-hover-moves__tooltip-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+}
+
+.pokemon-hover-moves__tooltip-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--text-h);
+}
+
+.pokemon-hover-moves__tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pokemon-hover-moves__tooltip-move {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: var(--text-h);
+  text-transform: capitalize;
+}
+
+.pokemon-hover-moves__tooltip-move--linked {
+  cursor: pointer;
+}
+
+.pokemon-hover-moves__tooltip-move--linked:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.pokemon-hover-moves__tooltip-type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

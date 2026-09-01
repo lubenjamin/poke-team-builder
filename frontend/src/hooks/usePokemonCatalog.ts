@@ -9,8 +9,15 @@ export interface PokemonCatalog {
   status: CatalogStatus;
 }
 
-const CACHE_KEY = "poke-team-builder:pokemon-catalog";
-const CACHE_VERSION_KEY = "poke-team-builder:pokemon-catalog-version";
+// The ":v2" suffix busts any cache written before is_battle_only was added
+// to PokemonRead — GET /api/pokemon/version only changes when the scan job
+// detects a real data change (see PokemonChangeLog), not when the API
+// response *shape* changes server-side, so a stale cache under the old key
+// would otherwise keep serving entries with is_battle_only silently
+// undefined forever. Bump this suffix again any time PokemonRead's shape
+// changes in a way a consumer depends on.
+const CACHE_KEY = "poke-team-builder:pokemon-catalog:v2";
+const CACHE_VERSION_KEY = "poke-team-builder:pokemon-catalog-version:v2";
 
 function readCache(): { pokemon: Pokemon[]; version: string } | null {
   try {

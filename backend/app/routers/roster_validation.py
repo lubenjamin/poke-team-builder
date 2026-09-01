@@ -18,25 +18,44 @@ def _raise_if_missing(requested: set[int], available: set[int], message: str) ->
 
 
 def validate_roster_slots(db: Session, slots: list[RosterSlotInput]) -> None:
-    """Raises HTTPException(422) if any pokemon_id/move_id doesn't exist, two
-    slots share a species, or a move isn't actually in that Pokemon's
-    movepool. Shared by teams.replace_roster and
-    counter_team.generate_counter_team — both accept the same
-    {pokemon_id, move_ids}[] shape and need the same checks."""
+    """Raises HTTPException(422) if any pokemon_id/move_id doesn't exist, a
+    pokemon_id is a battle-only form, two slots share a species, or a move
+    isn't actually in that Pokemon's movepool. Shared by teams.replace_roster
+    and counter_team.generate_counter_team — both accept the same
+    {pokemon_id, move_ids}[] shape and need the same checks, including for
+    the opponent roster you submit to be countered: that's also describing
+    a team, so the same legality rules apply to it."""
     pokemon_ids = [slot.pokemon_id for slot in slots]
     if pokemon_ids:
         found_pokemon_ids = set(db.scalars(select(Pokemon.id).where(Pokemon.id.in_(pokemon_ids))))
         _raise_if_missing(set(pokemon_ids), found_pokemon_ids, "Unknown pokemon_ids")
 
+        pokemon_rows = db.execute(
+            select(Pokemon.id, Pokemon.species_id, Pokemon.is_battle_only).where(
+                Pokemon.id.in_(pokemon_ids)
+            )
+        ).all()
+
+        # Mega Evolutions, Primal Reversions, etc. only exist transiently
+        # during a battle via a base form's held item/mechanic — they're
+        # never a legal team-list entry on their own, same restriction the
+        # counter-team generator's candidate pool already enforces.
+        battle_only_ids = sorted(
+            pokemon_id for pokemon_id, _species_id, is_battle_only in pokemon_rows if is_battle_only
+        )
+        if battle_only_ids:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "Battle-only forms (e.g. Mega Evolutions) can't be added to a team — "
+                    f"pokemon_ids: {battle_only_ids}"
+                ),
+            )
+
         # Only one form per species — e.g. base Rotom and Rotom-Wash can't both
         # be on the same team, since pokemon_ids alone (479 vs 10009) wouldn't
         # catch that; they only collide once you look at species_id.
-        species_by_pokemon = dict(
-            db.execute(
-                select(Pokemon.id, Pokemon.species_id).where(Pokemon.id.in_(pokemon_ids))
-            ).all()
-        )
-        species_counts = Counter(species_by_pokemon.values())
+        species_counts = Counter(species_id for _pokemon_id, species_id, _is_battle_only in pokemon_rows)
         duplicate_species = sorted(
             species_id for species_id, count in species_counts.items() if count > 1
         )
