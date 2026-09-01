@@ -54,7 +54,7 @@ export function DevToolsPage({ catalog, moveCatalog }: DevToolsPageProps) {
       <main>
         <PageHero
           title="Dev Tools"
-          description="Trigger scans and simulate data drift for demoing the change-detection pipeline."
+          description="Trigger scans and simulate data drift for demoing the change-detection."
         />
         <form className="dev-tools__secret-form" onSubmit={handleSubmit}>
           <label className="dev-tools__secret-label">
@@ -85,7 +85,7 @@ export function DevToolsPage({ catalog, moveCatalog }: DevToolsPageProps) {
     <main>
       <PageHero
         title="Dev Tools"
-        description="Trigger scans and simulate data drift for demoing the change-detection pipeline."
+        description="Trigger scans and simulate data drift for demoing the change-detection."
       />
       <div className="dev-tools__grid">
         <ScanCard title="Scan Pokémon" onScan={scanPokemon} onUnauthorized={clearSecret} />

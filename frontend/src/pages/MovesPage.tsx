@@ -41,7 +41,7 @@ export function MovesPage({ catalog }: MovesPageProps) {
     <main>
       <PageHero
         title="Moves"
-        description="Every move in the game — type, damage class, power, accuracy, PP, and effect. Search by name or filter by type."
+        description="Every move in the game — type, damage class, power, accuracy, PP, and effect."
       />
 
       <div className="moves-page__filters">

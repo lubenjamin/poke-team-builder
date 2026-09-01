@@ -50,7 +50,7 @@ export function TeamOptimizerPage({ catalog, moveCatalog }: TeamOptimizerPagePro
     <main>
       <PageHero
         title="Team Optimizer"
-        description="Build out the team you're facing, then generate a team of your own in response. Right now this returns a random team — real matchup-aware optimization is next."
+        description="Build out the team you're facing, then generate a counter team of your own."
       />
 
       <div className="optimizer-page__layout">

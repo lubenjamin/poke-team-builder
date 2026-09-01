@@ -85,7 +85,7 @@ export function ChangeLogPage({ catalog, moveCatalog }: ChangeLogPageProps) {
     <main>
       <PageHero
         title="Change Log"
-        description="Recently detected changes to Pokémon and move data, found by the recurring scan jobs that re-check PokeAPI."
+        description="Change history to Pokémon and move data"
       />
 
       {status === "ready" && entries.length > 0 && (

@@ -41,7 +41,7 @@ export function TeamsPage() {
 
   return (
     <main>
-      <PageHero title="Teams" description="" />
+      <PageHero title="Teams" description="Catalog of your saved teams" />
       <div className="teams-page__layout">
         <TeamList
           teams={teams}
