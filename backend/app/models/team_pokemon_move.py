@@ -5,9 +5,9 @@ from app.db import Base
 
 
 class TeamPokemonMove(Base):
-    """Up to 4 moves selected for one roster slot. FKs `team_pokemon.id`, not
-    `pokemon_id` — the same species could have a different moveset on a
-    different team, or in a different slot."""
+    """
+    Up to 4 moves selected for one roster slot. FKs `team_pokemon.id`.
+    """
 
     __tablename__ = "team_pokemon_move"
     __table_args__ = (

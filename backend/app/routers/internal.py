@@ -38,9 +38,8 @@ def scan_pokemon(
     max_workers: int = DEFAULT_MAX_WORKERS,
     db: Session = Depends(get_db),
 ) -> ScanResultRead:
-    """`limit` caps how many cached Pokemon are re-checked — useful for a
-    fast demo run instead of the full catalog. `max_workers` bounds how many
-    PokeAPI fetches run concurrently."""
+    """`limit` caps how many cached Pokemon are re-checked.
+    `max_workers` bounds how many PokeAPI fetches run concurrently."""
     return scan_all_pokemon_for_changes(db, limit=limit, max_workers=max_workers)
 
 

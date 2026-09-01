@@ -7,10 +7,12 @@ from app.db import Base
 
 
 class Pokemon(Base):
-    """Local cache of PokeAPI data. `id` is the PokeAPI id, not a generated key.
+    """
+    Local cache of PokeAPI data. `id` is the PokeAPI id.
     One row per form/variety (e.g. Rotom-Wash is its own row) — `species_id` links
     forms of the same species together; the national dex number lives on
-    PokemonSpecies, not here, since it's shared across a species' forms."""
+    PokemonSpecies, not here, since it's shared across a species' forms.
+    """
 
     __tablename__ = "pokemon"
 
@@ -23,11 +25,6 @@ class Pokemon(Base):
         ForeignKey("pokemon_species.id"), nullable=False, index=True
     )
     is_default: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=false())
-    # From the /pokemon-form/{id} resource (not /pokemon/{id} itself — a
-    # separate PokeAPI fetch). True for forms only reachable via in-battle
-    # transformation (Mega Evolution, primal reversion, etc.) — these can't
-    # be added to a team outside of battle, so the counter-team generator
-    # filters candidates on this.
     is_battle_only: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=false())
 
     hp: Mapped[int] = mapped_column(Integer, nullable=False)

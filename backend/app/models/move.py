@@ -7,12 +7,13 @@ from app.db import Base
 
 
 class Move(Base):
-    """Local cache of PokeAPI move data. `id` is the PokeAPI move id.
+    """
+    Local cache of PokeAPI move data. `id` is the PokeAPI move id.
     power/accuracy/effect_chance are legitimately nullable — status moves have no
     power, guaranteed-hit moves have no accuracy. pp is nullable too — Z-Moves
-    and Max Moves (ids 10001+) have none of their own, they inherit it from the
-    move they're derived from. priority is signed (can be negative) but always
-    present, so it's the one numeric field that's NOT NULL."""
+    and Max Moves (ids 10001+) have none of their own. Priority is signed 
+    (can be negative) but always present, so it's the one numeric field that's NOT NULL.
+    """
 
     __tablename__ = "move"
 

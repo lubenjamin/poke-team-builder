@@ -9,17 +9,6 @@ from app.schemas.team import TeamPokemonRead
 from app.services.type_effectiveness import fetch_full_type_matrix
 
 MAX_MOVES_PER_POKEMON = 4
-
-
-# ---------------------------------------------------------------------------
-# Matchup-aware counter-team generator, built up incrementally: Stage A
-# (score_candidate) ranks each legal candidate against the opponent roster,
-# Stage B (select_counter_team) greedily assembles a 6-species team out of
-# those scores, Stage C (select_moves_for_coverage) picks each teammate's
-# moveset, and generate_matchup_counter_team below wires all three into
-# what POST /api/counter-team actually calls.
-# ---------------------------------------------------------------------------
-
 BATTLE_LEVEL = 50  # standard competitive convention (VGC-style rules)
 STAB_MULTIPLIER = 1.5  # same-type-attack-bonus
 
@@ -51,13 +40,10 @@ def estimate_damage(
 ) -> float:
     """Simplified Gen 3+ damage formula, level fixed at BATTLE_LEVEL — a
     relative scoring signal for ranking candidates/moves against each
-    other, not a battle-accurate calculator: our data model has no
-    EVs/IVs/natures/abilities (v1 scope, see CLAUDE.md's v2 roadmap), so
-    `attacker_stat`/`defender_stat` are base stats, not real battle stats.
-    Deliberately omits the random 0.85-1.0 roll, critical hits, weather,
-    and status effects (e.g. burn halving physical damage) — none of that
-    data exists here, and a deterministic estimate is what a scoring
-    heuristic needs, not a probabilistic one.
+    other, not a battle-accurate calculator:  data model has no
+    EVs/IVs/natures/abilities, so `attacker_stat`/`defender_stat` are base stats, 
+    not real battle stats. Deliberately omits the random 0.85-1.0 roll, critical hits, weather,
+    and status effects (e.g. burn halving physical damage).
 
     Returns 0.0 for a non-damaging move (no power, e.g. a status move) or
     when `type_multiplier` is 0 (the defender is immune) — both are
@@ -381,10 +367,15 @@ def select_moves_for_coverage(
 
     Status moves are absent from damage_table (_movepool_damage_table
     excludes them outright — they contribute no direct-damage coverage).
-    Stops early, before filling all max_moves slots, once no remaining
-    move adds any further coverage — a 4th move that improves nothing
-    against this specific opponent roster isn't picked just to fill the
-    slot.
+    The coverage loop itself stops early once no remaining move adds any
+    further coverage — but rather than leave the slot empty, whatever's
+    left over is padded with each remaining move's best single-target hit
+    (highest damage-% against any one opponent), so a teammate doesn't come
+    out with a thinner-than-normal moveset. Those padding picks add no
+    marginal coverage — that's exactly why the loop above didn't pick them
+    — they're just the next-best individual hits, same as a real player's
+    4th move slot often being "hits this one specific threat hard" rather
+    than something that changes the matchup.
     """
     best_per_opponent: dict[int, float] = {slot.pokemon.id: 0.0 for slot in opponent_roster}
     chosen: list[Move] = []
@@ -411,6 +402,10 @@ def select_moves_for_coverage(
         for opponent_id in best_per_opponent:
             best_per_opponent[opponent_id] = max(best_per_opponent[opponent_id], row[opponent_id])
         remaining.remove(best_move)
+
+    if remaining and len(chosen) < max_moves:
+        remaining.sort(key=lambda move: max(damage_table[move.id].values()), reverse=True)
+        chosen.extend(remaining[: max_moves - len(chosen)])
 
     return chosen
 

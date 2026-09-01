@@ -5,9 +5,11 @@ from app.db import Base
 
 
 class PokemonSpecies(Base):
-    """One row per national dex entry (from /pokedex/national). A species can have
+    """
+    One row per national dex entry (from /pokedex/national). A species can have
     multiple `pokemon` forms/varieties (e.g. Rotom's 5 forms) that all share the
-    same national_dex_number."""
+    same national_dex_number.
+    """
 
     __tablename__ = "pokemon_species"
 

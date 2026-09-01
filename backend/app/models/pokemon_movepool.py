@@ -5,9 +5,11 @@ from app.db import Base
 
 
 class PokemonMovepool(Base):
-    """Join table: which moves a given form can learn. FKs the per-form `pokemon`
+    """
+    Junction table for which moves a given form can learn. FKs the per-form `pokemon`
     table (not `pokemon_species`) since PokeAPI's movepool is defined per form —
-    two forms of the same species can legitimately learn different moves."""
+    two forms of the same species can legitimately learn different moves.
+    """
 
     __tablename__ = "pokemon_movepool"
     __table_args__ = (

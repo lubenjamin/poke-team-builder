@@ -5,7 +5,9 @@ from app.db import Base
 
 
 class TeamPokemon(Base):
-    """Join table: a team's ordered roster. `slot` (0-5) preserves order."""
+    """
+    Junction table for a team's ordered roster. `slot` (0-5) preserves order.
+    """
 
     __tablename__ = "team_pokemon"
     __table_args__ = (UniqueConstraint("team_id", "slot", name="uq_team_pokemon_team_slot"),)

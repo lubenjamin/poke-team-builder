@@ -7,7 +7,9 @@ from app.db import Base
 
 
 class PokemonChangeLog(Base):
-    """Append-only record of detected PokeAPI field changes. Public change-log evidence trail."""
+    """
+    Append-only record of detected PokeAPI field changes.
+    """
 
     __tablename__ = "pokemon_change_log"
 

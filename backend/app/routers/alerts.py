@@ -9,8 +9,7 @@ from app.schemas.alert import AlertRead
 
 router = APIRouter(prefix="/api/alerts", tags=["alerts"])
 
-# Alerts are filtered by *current* team membership at read time, not just
-# written once and left static — see docs/schema.md for the rationale.
+
 _ACTIVE_ALERTS_SQL = text(
     """
     SELECT alerts.*

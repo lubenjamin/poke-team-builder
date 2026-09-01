@@ -8,8 +8,9 @@ from app.db import Base
 
 
 class IngestionError(Base):
-    """Records data-validation failures during ingestion (not transient fetch errors,
-    which are retried at the HTTP layer instead — see services/pokeapi_client.py)."""
+    """
+    Records data-validation failures during ingestion.
+    """
 
     __tablename__ = "ingestion_errors"
 

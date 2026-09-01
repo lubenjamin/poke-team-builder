@@ -45,10 +45,6 @@ def fetch_owned_team_with_roster(team_id: int, client_id: str, db: Session) -> T
 def list_teams(
     client_id: str = Depends(get_client_id), db: Session = Depends(get_db)
 ) -> list[Team]:
-    # Includes each team's roster (not just TeamRead) so the teams list page
-    # can show a sprite-row preview without a second request per team —
-    # cheap at this scale (a handful of teams per client, 6 Pokemon each),
-    # unlike the whole-catalog eager-loads removed elsewhere this session.
     stmt = (
         select(Team)
         .where(Team.client_id == client_id)

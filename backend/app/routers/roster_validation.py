@@ -36,10 +36,6 @@ def validate_roster_slots(db: Session, slots: list[RosterSlotInput]) -> None:
             )
         ).all()
 
-        # Mega Evolutions, Primal Reversions, etc. only exist transiently
-        # during a battle via a base form's held item/mechanic — they're
-        # never a legal team-list entry on their own, same restriction the
-        # counter-team generator's candidate pool already enforces.
         battle_only_ids = sorted(
             pokemon_id for pokemon_id, _species_id, is_battle_only in pokemon_rows if is_battle_only
         )
@@ -52,9 +48,6 @@ def validate_roster_slots(db: Session, slots: list[RosterSlotInput]) -> None:
                 ),
             )
 
-        # Only one form per species — e.g. base Rotom and Rotom-Wash can't both
-        # be on the same team, since pokemon_ids alone (479 vs 10009) wouldn't
-        # catch that; they only collide once you look at species_id.
         species_counts = Counter(species_id for _pokemon_id, species_id, _is_battle_only in pokemon_rows)
         duplicate_species = sorted(
             species_id for species_id, count in species_counts.items() if count > 1

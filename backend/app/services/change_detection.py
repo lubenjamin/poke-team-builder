@@ -33,20 +33,8 @@ from app.services.validation import validate_move, validate_pokemon
 logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_WORKERS = 15
-
-# Fetching the *entire* catalog concurrently before writing any of it (the
-# original design) held every raw PokeAPI payload for the whole catalog in
-# memory at once — confirmed live to OOM-kill a 512MB Render instance on a
-# full ~1343-Pokemon scan. Processing in bounded batches (fetch a batch,
-# write it, commit, discard it, move on) keeps peak memory roughly constant
-# regardless of catalog size, while still covering every single entry on
-# every scan run — nothing is skipped or rotated out.
 DEFAULT_SCAN_BATCH_SIZE = 50
 
-# The Pokemon fields that actually surface in the app (Pokedex grid, team
-# builder, detail page) — a change to any of these is worth alerting a user
-# whose team includes that Pokemon about. species_id/is_default/last_fetched_at
-# are internal bookkeeping, not user-visible data, so they're excluded.
 _TRACKED_FIELDS = (
     "name",
     "sprite_url",
@@ -59,7 +47,6 @@ _TRACKED_FIELDS = (
     "speed",
 )
 
-# Same idea, for Move — everything gameplay-relevant except id.
 _TRACKED_MOVE_FIELDS = (
     "name",
     "type",
@@ -337,8 +324,7 @@ def scan_all_pokemon_for_changes(
     max_workers: int = DEFAULT_MAX_WORKERS,
     batch_size: int = DEFAULT_SCAN_BATCH_SIZE,
 ) -> ScanResult:
-    """Re-scans the cached catalog — the recurring job's entry point (also
-    the internal on-demand trigger). Every scan covers the full requested
+    """Re-scans the cached catalog — Every scan covers the full requested
     set every run (no rotation) since any Pokemon could change and it
     should be caught as soon as possible.
 
@@ -353,8 +339,7 @@ def scan_all_pokemon_for_changes(
     OOM-kill a memory-constrained deployment on a full scan.
 
     A transient PokeAPI fetch failure just skips that one Pokemon rather
-    than aborting the whole run; `limit` caps how many are re-checked, for a
-    fast local/demo run instead of the full ~1343-Pokemon catalog."""
+    than aborting the whole run;"""
     pokemon_ids = list(db.scalars(select(Pokemon.id).order_by(Pokemon.id)))
     if limit is not None:
         pokemon_ids = pokemon_ids[:limit]

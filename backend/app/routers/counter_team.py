@@ -16,10 +16,9 @@ router = APIRouter(prefix="/api", tags=["counter-team"])
 def _generate_counter_team_for_saved_team(
     team_id: int, client_id: str, db: Session
 ) -> tuple[Team, list[TeamPokemonRead]]:
-    """Loads a saved team (ownership-checked) and runs the matchup-aware
-    generator against its roster — shared by the read-only preview route
-    and the save route below, so "generate" and "generate, then persist"
-    can't drift into computing two different teams."""
+    """
+    Loads a saved team and runs the counter-team generator against its roster
+    """
     source_team = fetch_owned_team_with_roster(team_id, client_id, db)
     if not source_team.roster:
         raise HTTPException(status_code=400, detail="Team has no Pokemon to counter")
@@ -44,10 +43,10 @@ def generate_counter_team_for_saved_team(
 def save_counter_team_for_saved_team(
     team_id: int, client_id: str = Depends(get_client_id), db: Session = Depends(get_db)
 ) -> Team:
-    """One-click save: generate a counter team for team_id (same generator
-    and result the preview route above would show) and persist it as a new
-    team owned by the same client, instead of making the frontend re-submit
-    the generated roster back through PUT .../roster itself."""
+    """
+    Loads a saved team and runs the counter-team generator against its roster
+    and saves the counter-team to the user's list of teams
+    """
     source_team, generated = _generate_counter_team_for_saved_team(team_id, client_id, db)
 
     new_team = Team(client_id=client_id, name=f"Counter to {source_team.name}")
@@ -91,6 +90,9 @@ def _build_opponent_roster(db: Session, body: CounterTeamRequest) -> list[Battle
 def generate_counter_team(
     body: CounterTeamRequest, db: Session = Depends(get_db)
 ) -> list[TeamPokemonRead]:
+    """
+    Recieves an opponent's team and generates a counter-team
+    """
     validate_roster_slots(db, body.slots)
     opponent_roster = _build_opponent_roster(db, body)
     return generate_matchup_counter_team(db, opponent_roster, team_size=len(body.slots))

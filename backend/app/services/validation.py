@@ -9,7 +9,7 @@ POKEMON_STAT_FIELDS = [
 
 
 def validate_pokemon(transformed: dict) -> tuple[bool, str | None]:
-    """v1 rule (CLAUDE.md §6): valid only if all six stat fields are present and
+    """valid only if all six stat fields are present and
     non-negative integers, all-or-nothing. Identity/display fields are checked too,
     since a NOT NULL violation on write would crash the batch instead of failing
     closed on just that record."""
